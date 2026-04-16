@@ -1,0 +1,188 @@
+:root {
+    --primary-green: #1a7431;
+    --light-bg: #f4fbf6;
+    --accent-green: #2d6a4f;
+}
+
+
+body, html {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    height: 100%;    
+}
+
+.main-container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;    
+}
+
+/* SISI KIRI: Background Image + Overlay */
+.brand-section {
+    flex: 1.2;
+    position: relative;
+    /* Gunakan path absolut '/images/...' karena file ada di folder public */
+    background-image: url('/images/bg-register.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px;
+    color: white;
+    /* Pastikan section ini berada di bawah content tapi di atas default */
+    z-index: 0; 
+}
+
+/* Overlay hijau transparan */
+.brand-section::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(26, 116, 49, 0.85) 0%, rgba(45, 106, 79, 0.7) 100%);
+    /* z-index 1 agar berada di atas gambar background */
+    z-index: 1;
+}
+
+/* Konten teks harus z-index lebih tinggi dari overlay */
+.brand-content {
+    position: relative;
+    z-index: 2;
+}
+
+.brand-logo-icon {
+    background: white;
+    color: var(--primary-green);
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.brand-title {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+    letter-spacing: 2px;
+}
+
+.brand-description {
+    font-size: 1.25rem;
+    max-width: 500px;
+    opacity: 0.95;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+}
+
+.feature-list li {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+.feature-list li i {
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+/* SISI KANAN: Form Area */
+.form-section {
+    flex: 1;
+    background-color: var(--light-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.register-card {
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 480px;
+}
+
+.form-header-title {
+    font-weight: 800;
+    color: #1b4332;
+    margin-bottom: 30px;
+    font-size: 2rem;
+}
+
+.form-label {
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #4a4a4a;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.form-control, .form-select {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    background-color: #f8fafc;
+    font-size: 0.95rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+    background-color: white;
+    outline: none;
+}
+
+.btn-register {
+    background-color: var(--primary-green);
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    border: none;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-register:hover {
+    background-color: var(--accent-green);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(26, 116, 49, 0.3);
+    color: white;
+}
+
+.login-text {
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.login-link {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+/* Responsif untuk Mobile */
+@media (max-width: 992px) {
+    .main-container { flex-direction: column; }
+    .brand-section { padding: 60px 30px; flex: none; min-height: 40vh; }
+    .brand-title { font-size: 2.5rem; }
+    .form-section { padding: 40px 20px; }
+}
