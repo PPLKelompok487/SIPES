@@ -14,6 +14,7 @@ class ProfileController extends Controller
      */
     public function show()
     {
+        if (Auth::guest()) return redirect('/dev-login');
         $user = Auth::user();
         return view('profile.show', compact('user'));
     }
@@ -23,6 +24,7 @@ class ProfileController extends Controller
      */
     public function edit()
     {
+        if (Auth::guest()) return redirect('/dev-login');
         $user = Auth::user();
         return view('profile.edit', compact('user'));
     }
@@ -32,6 +34,7 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
+        if (Auth::guest()) return redirect('/dev-login');
         $user = Auth::user();
 
         $request->validate([
@@ -52,6 +55,7 @@ class ProfileController extends Controller
      */
     public function editPassword()
     {
+        if (Auth::guest()) return redirect('/dev-login');
         return view('profile.edit-password');
     }
 
@@ -60,6 +64,7 @@ class ProfileController extends Controller
      */
     public function updatePassword(Request $request)
     {
+        if (Auth::guest()) return redirect('/dev-login');
         $request->validate([
             'current_password' => ['required'],
             'password'         => ['required', 'confirmed', Password::min(8)],
