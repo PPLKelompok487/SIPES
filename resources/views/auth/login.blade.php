@@ -62,6 +62,11 @@
                         <input type="password" class="form-control" name="password" placeholder="Password" required>
                     </div>
 
+                    <div class="mb-4 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                        <label class="form-check-label" for="remember" style="font-size: 0.9rem; color: #555;">Ingat Saya</label>
+                    </div>
+
                     <div class="d-grid">
                         <button type="submit" class="btn btn-login">
                             Masuk
