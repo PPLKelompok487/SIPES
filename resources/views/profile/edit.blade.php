@@ -6,6 +6,7 @@
     <title>Edit Profil - SIPES</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-green: #2d6a4f;
@@ -137,9 +138,29 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('profile.update') }}">
+                    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
+                        <input type="hidden" name="photo_base64" id="photo_base64">
+
+                        <div class="mb-4 text-center">
+                            @if($user->profile_photo_path)
+                                <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="Foto Profil" class="rounded-circle mb-3" id="profile-preview" style="width:100px; height:100px; object-fit:cover; border: 3px solid var(--soft-green);">
+                                <div class="rounded-circle align-items-center justify-content-center mb-3 d-none" id="profile-placeholder" style="width:100px; height:100px; font-size:2.5rem; font-weight:bold; background: rgba(45, 106, 79, 0.1); color: var(--primary-green); border: 3px solid var(--soft-green);">
+                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                </div>
+                            @else
+                                <img src="" alt="Foto Profil" class="rounded-circle mb-3 d-none" id="profile-preview" style="width:100px; height:100px; object-fit:cover; border: 3px solid var(--soft-green);">
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" id="profile-placeholder" style="width:100px; height:100px; font-size:2.5rem; font-weight:bold; background: rgba(45, 106, 79, 0.1); color: var(--primary-green); border: 3px solid var(--soft-green);">
+                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                </div>
+                            @endif
+                            <div>
+                                <label class="form-label d-block text-center"><i class="fas fa-camera me-1"></i> Unggah Foto Profil</label>
+                                <input type="file" class="form-control form-control-sm mx-auto" id="photo-input" name="photo" accept="image/jpeg,image/png,image/jpg" style="max-width: 250px;">
+                                <small class="text-muted d-block mt-1">Format: JPG, PNG (Maks 2MB)</small>
+                            </div>
+                        </div>
 
                         <div class="mb-3">
                             <label class="form-label"><i class="fas fa-user me-1"></i> Nama Lengkap</label>
@@ -190,6 +211,93 @@
         </div>
     </div>
 
+    <!-- Crop Modal -->
+    <div class="modal fade" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cropModalLabel">Sesuaikan Foto Profil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="img-container" style="max-height: 60vh; display: inline-block;">
+                        <img id="image-to-crop" src="" alt="Picture" style="max-width: 100%; display: block;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="btn-crop-apply">Potong & Terapkan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+        let cropper;
+        const photoInput = document.getElementById('photo-input');
+        const imageToCrop = document.getElementById('image-to-crop');
+        const cropModalEl = document.getElementById('cropModal');
+        const cropModal = new bootstrap.Modal(cropModalEl);
+        const btnCropApply = document.getElementById('btn-crop-apply');
+        const photoBase64Input = document.getElementById('photo_base64');
+        const profilePreview = document.getElementById('profile-preview');
+        const profilePlaceholder = document.getElementById('profile-placeholder');
+
+        photoInput.addEventListener('change', function (e) {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    imageToCrop.src = event.target.result;
+                    cropModal.show();
+                };
+                reader.readAsDataURL(files[0]);
+            }
+        });
+
+        cropModalEl.addEventListener('shown.bs.modal', function () {
+            cropper = new Cropper(imageToCrop, {
+                aspectRatio: 1,
+                viewMode: 2,
+                autoCropArea: 1,
+            });
+        });
+
+        cropModalEl.addEventListener('hidden.bs.modal', function () {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            // Kosongkan input file jika tidak ada hasil crop (batal)
+            if (!photoBase64Input.value) {
+                photoInput.value = '';
+            }
+        });
+
+        btnCropApply.addEventListener('click', function () {
+            if (!cropper) return;
+            
+            const canvas = cropper.getCroppedCanvas({
+                width: 500,
+                height: 500,
+            });
+
+            const base64Data = canvas.toDataURL('image/jpeg', 0.85);
+            photoBase64Input.value = base64Data;
+            
+            if (profilePreview) {
+                profilePreview.src = base64Data;
+                profilePreview.classList.remove('d-none');
+            }
+            if (profilePlaceholder) {
+                profilePlaceholder.classList.add('d-none');
+                profilePlaceholder.classList.remove('d-inline-flex');
+            }
+
+            cropModal.hide();
+        });
+    </script>
 </body>
 </html>

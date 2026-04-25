@@ -141,9 +141,13 @@
                 <div class="profile-card">
                     <!-- Avatar -->
                     <div class="text-center mb-4">
-                        <div class="avatar-circle">
-                            {{ strtoupper(substr($user->name, 0, 1)) }}
-                        </div>
+                        @if($user->profile_photo_path)
+                            <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="Foto Profil" class="avatar-circle" style="object-fit:cover; border-radius:50%;">
+                        @else
+                            <div class="avatar-circle">
+                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                            </div>
+                        @endif
                         <h4 class="mb-1">{{ $user->name }}</h4>
                         <span class="badge-role">
                             <i class="fas fa-user me-1"></i>
