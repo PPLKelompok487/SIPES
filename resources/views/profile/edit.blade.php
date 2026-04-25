@@ -7,49 +7,55 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-green: #2d6a4f;
+            --accent-green: #52b788;
+            --soft-green: #d8f3dc;
+            --dark-green: #1b4332;
+            --light-green: #95d5b2;
+            --bg-color: #f4f7f6;
+        }
         body {
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-color: var(--bg-color);
             min-height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
         }
         .form-card {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255,255,255,0.15);
-            backdrop-filter: blur(16px);
+            background: white;
             border-radius: 20px;
             padding: 2.5rem;
-            color: #fff;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
         .form-label {
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #43e97b;
+            color: var(--accent-green);
             margin-bottom: 0.4rem;
         }
         .form-control {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #fff;
+            background: var(--bg-color);
+            border: 1px solid rgba(0,0,0,0.1);
+            color: var(--dark-green);
             border-radius: 12px;
             padding: 0.75rem 1rem;
             transition: all 0.3s ease;
         }
         .form-control:focus {
-            background: rgba(255,255,255,0.12);
-            border-color: #43e97b;
-            box-shadow: 0 0 0 3px rgba(67,233,123,0.15);
-            color: #fff;
+            background: white;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+            color: var(--dark-green);
         }
-        .form-control::placeholder { color: rgba(255,255,255,0.4); }
+        .form-control::placeholder { color: #aaa; }
         .form-control:disabled {
-            background: rgba(255,255,255,0.04);
-            color: rgba(255,255,255,0.4);
+            background: #e9ecef;
+            color: #6c757d;
         }
         .btn-save {
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
-            color: #0f2027;
+            background: var(--primary-green);
+            color: white;
             font-weight: 600;
             border: none;
             border-radius: 12px;
@@ -59,33 +65,34 @@
         }
         .btn-save:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(67,233,123,0.4);
-            color: #0f2027;
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.2);
+            color: white;
+            background: var(--dark-green);
         }
         .btn-back {
             background: transparent;
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.3);
+            color: var(--primary-green);
+            border: 1px solid var(--primary-green);
             border-radius: 12px;
             padding: 0.75rem 2rem;
             width: 100%;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
         .btn-back:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
+            background: var(--soft-green);
+            color: var(--dark-green);
         }
         .alert-danger-custom {
-            background: rgba(220,53,69,0.15);
-            border: 1px solid rgba(220,53,69,0.4);
-            color: #ff8a9b;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
             border-radius: 12px;
             padding: 1rem 1.5rem;
             font-size: 0.875rem;
         }
         .sipes-header {
-            color: #43e97b;
+            color: var(--primary-green);
             font-weight: 700;
             font-size: 1.1rem;
             letter-spacing: 2px;
@@ -94,9 +101,10 @@
             font-size: 1.4rem;
             font-weight: 700;
             margin-bottom: 0.25rem;
+            color: var(--dark-green);
         }
         .page-subtitle {
-            color: rgba(255,255,255,0.5);
+            color: #6c757d;
             font-size: 0.875rem;
         }
     </style>
@@ -106,7 +114,7 @@
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <span class="sipes-header"><i class="fas fa-leaf me-2"></i>SIPES</span>
-            <a href="{{ route('profile.show') }}" class="btn btn-sm btn-outline-light rounded-pill px-3">
+            <a href="{{ route('profile.show') }}" class="btn btn-sm btn-outline-success rounded-pill px-3">
                 <i class="fas fa-arrow-left me-1"></i> Kembali
             </a>
         </div>
@@ -115,7 +123,7 @@
             <div class="col-md-7 col-lg-6">
                 <div class="form-card">
                     <div class="mb-4">
-                        <div class="page-title"><i class="fas fa-user-edit me-2" style="color:#43e97b"></i>Edit Profil</div>
+                        <div class="page-title"><i class="fas fa-user-edit me-2" style="color:var(--primary-green)"></i>Edit Profil</div>
                         <div class="page-subtitle">Perbarui nama dan email akun Anda</div>
                     </div>
 
