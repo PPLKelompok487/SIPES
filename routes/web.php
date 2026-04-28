@@ -6,6 +6,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\LaporanController;
 
 Route::get('/', function () {
     return view('home');
@@ -43,4 +44,9 @@ Route::prefix('profile')->name('profile.')->group(function () {
     Route::put('/update',    [ProfileController::class, 'update'])->name('update');
     Route::get('/password',  [ProfileController::class, 'editPassword'])->name('edit-password');
     Route::put('/password',  [ProfileController::class, 'updatePassword'])->name('update-password');
+});
+
+// Laporan routes (FR-05 - Lihat Daftar Laporan)
+Route::prefix('laporan')->name('laporan.')->middleware('auth')->group(function () {
+    Route::get('/', [LaporanController::class, 'index'])->name('index');
 });

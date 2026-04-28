@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - SI PES</title>
+    <title>Daftar Laporan - SI PES</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -63,7 +63,7 @@
             color: var(--dark-green);
         }
 
-        /* Dashboard Content */
+        /* Page Header */
         .dashboard-header {
             background: white;
             padding: 2rem 0;
@@ -83,81 +83,96 @@
             font-size: 1.1rem;
         }
 
-        /* Stats Cards */
-        .stat-card {
+        /* Container card */
+        .laporan-container {
             background: white;
             border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 1.5rem;
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            margin-right: 1.5rem;
-        }
-
-        .stat-icon.primary { background: rgba(45, 106, 79, 0.1); color: var(--primary-green); }
-        .stat-icon.warning { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
-        .stat-icon.success { background: rgba(40, 167, 69, 0.1); color: #28a745; }
-
-        .stat-details h3 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0;
-            color: var(--dark-green);
-        }
-
-        .stat-details p {
-            margin-bottom: 0;
-            color: #6c757d;
-            font-weight: 500;
-        }
-
-        /* Quick Actions */
-        .action-card {
+        /* Per-laporan card */
+        .laporan-card {
             background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            border: 2px solid transparent;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent-green);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .action-card:hover {
-            transform: translateY(-5px);
+        .laporan-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .laporan-card.status-menunggu     { border-left-color: #ffc107; }
+        .laporan-card.status-diverifikasi { border-left-color: #0dcaf0; }
+        .laporan-card.status-diproses     { border-left-color: #fd7e14; }
+        .laporan-card.status-selesai      { border-left-color: #198754; }
+        .laporan-card.status-ditolak      { border-left-color: #dc3545; }
+
+        .laporan-card .badge {
+            font-weight: 600;
+            padding: 0.4rem 0.7rem;
+            border-radius: 50rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.3px;
+        }
+
+        .laporan-card h6 {
+            color: var(--dark-green);
+            font-size: 1.05rem;
+        }
+
+        .laporan-card .meta-row {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        .laporan-card .btn-outline-success {
             border-color: var(--accent-green);
-            color: inherit;
+            color: var(--primary-green);
         }
 
-        .action-icon {
-            font-size: 2.5rem;
-            color: var(--primary-green);
+        .laporan-card .btn-outline-success:hover {
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+            color: white;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #adb5bd;
             margin-bottom: 1rem;
         }
 
-        .action-title {
-            font-weight: 600;
-            color: var(--dark-green);
-            margin-bottom: 0.5rem;
+        .empty-state p {
+            color: #6c757d;
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+
+        /* Pagination */
+        .pagination {
+            margin-bottom: 0;
+        }
+
+        .page-link {
+            color: var(--primary-green);
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+            color: white;
         }
     </style>
 </head>
@@ -216,17 +231,17 @@
         </div>
     </nav>
 
-    <!-- Dashboard Header -->
+    <!-- Page Header -->
     <div class="dashboard-header">
         <div class="container">
-            <h1 class="dashboard-title">Selamat Datang, {{ explode(' ', Auth::user()->name)[0] }}! 👋</h1>
-            <p class="dashboard-subtitle">Ini adalah ringkasan aktivitas dan laporan Anda hari ini.</p>
+            <h1 class="dashboard-title">Daftar Laporan Sampah</h1>
+            <p class="dashboard-subtitle">Berikut adalah laporan sampah yang telah dibuat.</p>
         </div>
     </div>
 
     <!-- Main Content -->
     <div class="container pb-5">
-        
+
         @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
             {{ session('success') }}
@@ -234,69 +249,70 @@
         </div>
         @endif
 
-        @if(session('info'))
-        <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
-            {{ session('info') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        @endif
+        <div class="laporan-container">
 
-        <!-- Stats Row -->
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <div class="stat-icon primary">
-                        <i class="fas fa-clipboard-list"></i>
-                    </div>
-                    <div class="stat-details">
-                        <h3>0</h3>
-                        <p>Total Laporan Anda</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <div class="stat-icon warning">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-details">
-                        <h3>0</h3>
-                        <p>Laporan Diproses</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <div class="stat-icon success">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-details">
-                        <h3>0</h3>
-                        <p>Laporan Selesai</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Actions Row -->
-        <h4 class="mb-3 text-secondary fw-bold" style="font-size: 1.1rem;">Akses Cepat</h4>
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <a href="{{ route('reports.create') }}" class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-plus-circle"></i>
-                    </div>
-                    <h5 class="action-title">Buat Laporan Baru</h5>
-                    <p class="text-muted small mb-0">Laporkan masalah kebersihan di sekitar Anda.</p>
+            <!-- Card header row -->
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <small class="text-muted">
+                    <i class="fas fa-clipboard-list me-1"></i>
+                    {{ $laporans->total() }} Laporan ditemukan
+                </small>
+                <a href="{{ route('reports.create') }}" class="btn btn-sm btn-success">
+                    <i class="fas fa-plus me-1"></i> Buat Laporan
                 </a>
             </div>
-            <div class="col-md-4 mb-3">
-                <a href="{{ route('laporan.index') }}" class="action-card">
-                    <div class="action-icon"><i class="fas fa-clipboard-list"></i></div>
-                    <h5 class="action-title">Lihat Daftar Laporan</h5>
-                    <p class="text-muted small mb-0">Pantau laporan sampah yang telah dibuat.</p>
-                </a>
-            </div>
+
+            @if($laporans->isEmpty())
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>Belum ada laporan.</p>
+                </div>
+            @else
+                @foreach($laporans as $laporan)
+                    @php
+                        $statusMap = [
+                            'pending'      => ['class' => 'bg-warning text-dark',  'label' => 'Menunggu',     'style' => '', 'key' => 'menunggu'],
+                            'menunggu'     => ['class' => 'bg-warning text-dark',  'label' => 'Menunggu',     'style' => '', 'key' => 'menunggu'],
+                            'diverifikasi' => ['class' => 'bg-info text-white',    'label' => 'Diverifikasi', 'style' => '', 'key' => 'diverifikasi'],
+                            'diproses'     => ['class' => 'text-white',            'label' => 'Diproses',     'style' => 'background:#fd7e14;', 'key' => 'diproses'],
+                            'selesai'      => ['class' => 'bg-success text-white', 'label' => 'Selesai',      'style' => '', 'key' => 'selesai'],
+                            'ditolak'      => ['class' => 'bg-danger text-white',  'label' => 'Ditolak',      'style' => '', 'key' => 'ditolak'],
+                        ];
+                        $s = $statusMap[$laporan->status] ?? $statusMap['menunggu'];
+                        $heading = \Illuminate\Support\Str::limit($laporan->description, 70);
+                    @endphp
+
+                    <div class="laporan-card status-{{ $s['key'] }}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge {{ $s['class'] }}" @if($s['style']) style="{{ $s['style'] }}" @endif>
+                                {{ $s['label'] }}
+                            </span>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                {{ $laporan->created_at->format('d M Y') }}
+                            </small>
+                        </div>
+
+                        <h6 class="fw-bold mb-1">{{ $heading }}</h6>
+
+                        <div class="meta-row mb-2">
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ $laporan->location }}
+                            </small>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <a href="#" class="btn btn-sm btn-outline-success">
+                                Lihat Detail <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $laporans->links('pagination::bootstrap-5') }}
+                </div>
+            @endif
         </div>
 
     </div>
