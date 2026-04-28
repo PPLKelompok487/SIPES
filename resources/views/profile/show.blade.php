@@ -7,64 +7,70 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-green: #2d6a4f;
+            --accent-green: #52b788;
+            --soft-green: #d8f3dc;
+            --dark-green: #1b4332;
+            --light-green: #95d5b2;
+            --bg-color: #f4f7f6;
+        }
         body {
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-color: var(--bg-color);
             min-height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
         }
         .profile-card {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255,255,255,0.15);
-            backdrop-filter: blur(16px);
+            background: white;
             border-radius: 20px;
             padding: 2.5rem;
-            color: #fff;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
         .avatar-circle {
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            background: rgba(45, 106, 79, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
             font-weight: bold;
-            color: #0f2027;
+            color: var(--primary-green);
             margin: 0 auto 1rem auto;
-            box-shadow: 0 8px 24px rgba(67,233,123,0.4);
+            border: 3px solid var(--soft-green);
         }
         .info-row {
-            background: rgba(255,255,255,0.05);
+            background: var(--bg-color);
             border-radius: 12px;
             padding: 1rem 1.5rem;
             margin-bottom: 1rem;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
         }
         .info-label {
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #43e97b;
+            color: var(--accent-green);
             margin-bottom: 0.25rem;
         }
         .info-value {
             font-size: 1rem;
-            color: #fff;
+            color: var(--dark-green);
             font-weight: 500;
         }
         .badge-role {
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
-            color: #0f2027;
+            background: var(--soft-green);
+            color: var(--dark-green);
             font-size: 0.8rem;
             padding: 0.35rem 1rem;
             border-radius: 50px;
             font-weight: 600;
         }
         .btn-edit-profile {
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
-            color: #0f2027;
+            background: var(--primary-green);
+            color: white;
             font-weight: 600;
             border: none;
             border-radius: 12px;
@@ -73,32 +79,33 @@
         }
         .btn-edit-profile:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(67,233,123,0.4);
-            color: #0f2027;
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.2);
+            color: white;
+            background: var(--dark-green);
         }
         .btn-change-pass {
-            background: transparent;
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.3);
+            background: white;
+            color: var(--primary-green);
+            border: 1px solid var(--primary-green);
             border-radius: 12px;
             padding: 0.75rem 2rem;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
         .btn-change-pass:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
+            background: var(--soft-green);
+            color: var(--dark-green);
             transform: translateY(-2px);
         }
         .alert-success-custom {
-            background: rgba(67, 233, 123, 0.15);
-            border: 1px solid rgba(67,233,123,0.4);
-            color: #43e97b;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
             border-radius: 12px;
             padding: 1rem 1.5rem;
         }
         .sipes-header {
-            color: #43e97b;
+            color: var(--primary-green);
             font-weight: 700;
             font-size: 1.1rem;
             letter-spacing: 2px;
@@ -110,8 +117,8 @@
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <span class="sipes-header"><i class="fas fa-leaf me-2"></i>SIPES</span>
-            <a href="/" class="btn btn-sm btn-outline-light rounded-pill px-3">
-                <i class="fas fa-home me-1"></i> Beranda
+            <a href="/dashboard" class="btn btn-sm btn-outline-success rounded-pill px-3">
+                <i class="fas fa-home me-1"></i> Dashboard
             </a>
         </div>
 
@@ -134,9 +141,13 @@
                 <div class="profile-card">
                     <!-- Avatar -->
                     <div class="text-center mb-4">
-                        <div class="avatar-circle">
-                            {{ strtoupper(substr($user->name, 0, 1)) }}
-                        </div>
+                        @if($user->profile_photo_path)
+                            <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="Foto Profil" class="avatar-circle" style="object-fit:cover; border-radius:50%;">
+                        @else
+                            <div class="avatar-circle">
+                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                            </div>
+                        @endif
                         <h4 class="mb-1">{{ $user->name }}</h4>
                         <span class="badge-role">
                             <i class="fas fa-user me-1"></i>

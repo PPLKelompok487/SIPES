@@ -19,6 +19,11 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// Dashboard route
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware('auth')->name('dashboard');
+
 // Profile routes (PBI 3 - Kelola Profil)
 Route::prefix('profile')->name('profile.')->group(function () {
     Route::get('/',          [ProfileController::class, 'show'])->name('show');
