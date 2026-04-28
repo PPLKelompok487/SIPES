@@ -279,7 +279,7 @@
         <h4 class="mb-3 text-secondary fw-bold" style="font-size: 1.1rem;">Akses Cepat</h4>
         <div class="row">
             <div class="col-md-4 mb-3">
-                <a href="#" class="action-card" onclick="alert('Fitur Lapor Masalah akan segera hadir!')">
+                <a href="{{ route('reports.create') }}" class="action-card">
                     <div class="action-icon">
                         <i class="fas fa-plus-circle"></i>
                     </div>

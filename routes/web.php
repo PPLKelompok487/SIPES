@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return view('home');
@@ -23,6 +24,17 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
+
+// Public reverse location API for report geocoding
+Route::get('/location/reverse', [ReportController::class, 'reverseLocation'])->name('location.reverse');
+
+// Report routes
+Route::middleware('auth')->group(function () {
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/create', [ReportController::class, 'create'])->name('reports.create');
+    Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+    Route::delete('/reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
+});
 
 // Profile routes (PBI 3 - Kelola Profil)
 Route::prefix('profile')->name('profile.')->group(function () {
