@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Laporan - SI PES</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f4f7f6; color: #333; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar { background: #2d6a4f; }
+        .navbar-brand, .nav-link { color: white !important; }
+        .report-card { border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .badge-status { font-size: 0.85rem; }
+        .report-image { max-width: 120px; border-radius: 10px; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ route('dashboard') }}"><i class="fas fa-leaf me-2"></i>SI PES</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('reports.create') }}">Lapor Baru</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+        @if(session('success'))
+            <div id="toast-success" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ session('success') }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        @endif
+        @if(session('info'))
+            <div id="toast-info" class="toast align-items-center text-bg-info border-0" role="alert" aria-live="polite" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ session('info') }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        @endif
+    </div>
+
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3">Riwayat Laporan</h1>
+                <p class="text-muted mb-0">Laporan sampah yang Anda kirim sebagai pelapor.</p>
+            </div>
+            <a href="{{ route('reports.create') }}" class="btn btn-success"><i class="fas fa-plus me-2"></i>Tambah Laporan</a>
+        </div>
+
+        @if($reports->isEmpty())
+            <div class="alert alert-info">Belum ada laporan. Mulai laporkan sampah di sekitar Anda.</div>
+        @else
+            <div class="row gy-3">
+                @foreach($reports as $report)
+                    <div class="col-lg-12">
+                        <div class="card report-card p-3">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-2 text-center">
+                                    <img src="{{ asset('storage/' . $report->photo_path) }}" alt="Foto laporan" class="report-image img-fluid">
+                                </div>
+                                <div class="col-md-7">
+                                    <h5 class="mb-1">{{ \Illuminate\Support\Str::limit($report->description, 80) }}</h5>
+                                    <p class="mb-1 text-muted"><strong>Lokasi:</strong> {{ $report->location }}</p>
+                                    <p class="mb-0 text-secondary">Dilaporkan oleh <strong>{{ Auth::user()->name }}</strong> pada {{ $report->created_at->format('d M Y H:i') }}</p>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-{{ $report->status === 'pending' ? 'warning' : ($report->status === 'processing' ? 'info' : 'success') }} badge-status">
+                                        {{ ucfirst($report->status) }}
+                                    </span>
+                                    <form method="POST" action="{{ route('reports.destroy', $report) }}" class="d-inline-block mt-2">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus laporan ini?');">
+                                            <i class="fas fa-trash-alt"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toastSuccess = document.getElementById('toast-success');
+            const toastInfo = document.getElementById('toast-info');
+
+            if (toastSuccess) {
+                new bootstrap.Toast(toastSuccess, { delay: 5000 }).show();
+            }
+
+            if (toastInfo) {
+                new bootstrap.Toast(toastInfo, { delay: 5000 }).show();
+            }
+        });
+    </script>
+</body>
+</html>
