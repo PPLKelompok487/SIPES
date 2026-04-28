@@ -178,9 +178,11 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
+                    @if(Auth::user()->role === 'pelapor')
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('laporan.*') ? 'active' : '' }}" href="{{ route('laporan.index') }}">Daftar Laporan</a>
                     </li>
+                    @endif
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
@@ -290,6 +292,7 @@
                     <p class="text-muted small mb-0">Laporkan masalah kebersihan di sekitar Anda.</p>
                 </a>
             </div>
+            @if(Auth::user()->role === 'pelapor')
             <div class="col-md-4 mb-3">
                 <a href="{{ route('laporan.index') }}" class="action-card">
                     <div class="action-icon"><i class="fas fa-clipboard-list"></i></div>
@@ -297,6 +300,7 @@
                     <p class="text-muted small mb-0">Pantau laporan sampah yang telah dibuat.</p>
                 </a>
             </div>
+            @endif
         </div>
 
     </div>

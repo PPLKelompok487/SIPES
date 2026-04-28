@@ -14,6 +14,10 @@ class LaporanController extends Controller
             return redirect('/login');
         }
 
+        if (Auth::user()->role !== 'pelapor') {
+            abort(403, 'Halaman ini hanya dapat diakses oleh masyarakat (pelapor).');
+        }
+
         $laporans = Auth::user()
             ->reports()
             ->with('user')
