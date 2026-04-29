@@ -283,28 +283,37 @@
                     @endphp
 
                     <div class="laporan-card status-{{ $s['key'] }}">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge {{ $s['class'] }}" @if($s['style']) style="{{ $s['style'] }}" @endif>
-                                {{ $s['label'] }}
-                            </span>
-                            <small class="text-muted">
-                                <i class="fas fa-calendar-alt me-1"></i>
-                                {{ $laporan->created_at->format('d M Y') }}
-                            </small>
-                        </div>
+                        <div class="row align-items-center">
+                            @if($laporan->photo_path)
+                            <div class="col-md-3 text-center mb-3 mb-md-0">
+                                <img src="{{ asset('storage/' . $laporan->photo_path) }}" alt="Foto Laporan" class="img-fluid rounded shadow-sm" style="max-height: 120px; object-fit: cover; border: 1px solid rgba(0,0,0,0.1);">
+                            </div>
+                            @endif
+                            <div class="col-md-{{ $laporan->photo_path ? '9' : '12' }}">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge {{ $s['class'] }}" @if($s['style']) style="{{ $s['style'] }}" @endif>
+                                        {{ $s['label'] }}
+                                    </span>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar-alt me-1"></i>
+                                        {{ $laporan->created_at->format('d M Y') }}
+                                    </small>
+                                </div>
 
-                        <h6 class="fw-bold mb-1">{{ $heading }}</h6>
+                                <h6 class="fw-bold mb-1">{{ $heading }}</h6>
 
-                        <div class="meta-row mb-2">
-                            <small class="text-muted">
-                                <i class="fas fa-map-marker-alt me-1"></i>{{ $laporan->location }}
-                            </small>
-                        </div>
+                                <div class="meta-row mb-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-map-marker-alt me-1"></i>{{ $laporan->location }}
+                                    </small>
+                                </div>
 
-                        <div class="d-flex justify-content-end">
-                            <a href="#" class="btn btn-sm btn-outline-success">
-                                Lihat Detail <i class="fas fa-arrow-right ms-1"></i>
-                            </a>
+                                <div class="d-flex justify-content-end">
+                                    <a href="#" class="btn btn-sm btn-outline-success">
+                                        Lihat Detail <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 @endforeach
