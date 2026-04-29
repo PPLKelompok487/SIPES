@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SI PES - Sistem Pelaporan Kebersihan</title>
+    <title>SIPES - Sistem Pelaporan Kebersihan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -299,7 +299,7 @@
         <div class="container">
             <a class="navbar-brand" href="#">
                 <i class="fas fa-leaf"></i>
-                SI PES
+                SIPES
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -439,7 +439,7 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>&copy; 2024 SI PES - Sistem Pelaporan Kebersihan. All rights reserved.</p>
+            <p>&copy; 2024 SIPES - Sistem Pelaporan Kebersihan. All rights reserved.</p>
             <p class="mt-2">
                 <i class="fas fa-code me-2"></i>
                 Dibuat dengan <i class="fas fa-heart text-danger"></i> untuk lingkungan yang lebih bersih

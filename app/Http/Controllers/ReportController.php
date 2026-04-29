@@ -66,7 +66,7 @@ class ReportController extends Controller
         ]);
 
         $response = Http::withHeaders([
-            'User-Agent' => 'SI PES Location Service',
+            'User-Agent' => 'SIPES Location Service',
         ])->get('https://nominatim.openstreetmap.org/reverse', [
             'format' => 'json',
             'lat' => $validated['lat'],
