@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Laporan - SI PES</title>
+    <title>Daftar Laporan - SIPES</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -183,7 +183,7 @@
         <div class="container">
             <a class="navbar-brand" href="{{ route('dashboard') }}">
                 <i class="fas fa-leaf"></i>
-                SI PES
+                SIPES
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -283,28 +283,37 @@
                     @endphp
 
                     <div class="laporan-card status-{{ $s['key'] }}">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge {{ $s['class'] }}" @if($s['style']) style="{{ $s['style'] }}" @endif>
-                                {{ $s['label'] }}
-                            </span>
-                            <small class="text-muted">
-                                <i class="fas fa-calendar-alt me-1"></i>
-                                {{ $laporan->created_at->format('d M Y') }}
-                            </small>
-                        </div>
+                        <div class="row align-items-center">
+                            @if($laporan->photo_path)
+                            <div class="col-md-3 text-center mb-3 mb-md-0">
+                                <img src="{{ asset('storage/' . $laporan->photo_path) }}" alt="Foto Laporan" class="img-fluid rounded shadow-sm" style="max-height: 120px; object-fit: cover; border: 1px solid rgba(0,0,0,0.1);">
+                            </div>
+                            @endif
+                            <div class="col-md-{{ $laporan->photo_path ? '9' : '12' }}">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge {{ $s['class'] }}" @if($s['style']) style="{{ $s['style'] }}" @endif>
+                                        {{ $s['label'] }}
+                                    </span>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar-alt me-1"></i>
+                                        {{ $laporan->created_at->format('d M Y') }}
+                                    </small>
+                                </div>
 
-                        <h6 class="fw-bold mb-1">{{ $heading }}</h6>
+                                <h6 class="fw-bold mb-1">{{ $heading }}</h6>
 
-                        <div class="meta-row mb-2">
-                            <small class="text-muted">
-                                <i class="fas fa-map-marker-alt me-1"></i>{{ $laporan->location }}
-                            </small>
-                        </div>
+                                <div class="meta-row mb-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-map-marker-alt me-1"></i>{{ $laporan->location }}
+                                    </small>
+                                </div>
 
-                        <div class="d-flex justify-content-end">
-                            <a href="#" class="btn btn-sm btn-outline-success">
-                                Lihat Detail <i class="fas fa-arrow-right ms-1"></i>
-                            </a>
+                                <div class="d-flex justify-content-end">
+                                    <a href="#" class="btn btn-sm btn-outline-success">
+                                        Lihat Detail <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 @endforeach
