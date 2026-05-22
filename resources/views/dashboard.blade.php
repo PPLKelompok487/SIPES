@@ -251,7 +251,7 @@
                         <i class="fas fa-clipboard-list"></i>
                     </div>
                     <div class="stat-details">
-                        <h3>0</h3>
+                        <h3>{{ $totalLaporan }}</h3>
                         <p>Total Laporan Anda</p>
                     </div>
                 </div>
@@ -262,7 +262,7 @@
                         <i class="fas fa-clock"></i>
                     </div>
                     <div class="stat-details">
-                        <h3>0</h3>
+                        <h3>{{ $laporanDiproses }}</h3>
                         <p>Laporan Diproses</p>
                     </div>
                 </div>
@@ -273,7 +273,7 @@
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="stat-details">
-                        <h3>0</h3>
+                        <h3>{{ $laporanSelesai }}</h3>
                         <p>Laporan Selesai</p>
                     </div>
                 </div>
