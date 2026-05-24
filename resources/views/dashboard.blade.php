@@ -183,6 +183,13 @@
                         <a class="nav-link {{ request()->routeIs('laporan.*') ? 'active' : '' }}" href="{{ route('laporan.index') }}">Daftar Laporan</a>
                     </li>
                     @endif
+                    @if(Auth::user()->role === 'admin')
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}" href="{{ route('admin.laporan.index') }}">
+                            <i class="fas fa-tasks me-1"></i>Kelola Laporan
+                        </a>
+                    </li>
+                    @endif
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
@@ -298,6 +305,15 @@
                     <div class="action-icon"><i class="fas fa-clipboard-list"></i></div>
                     <h5 class="action-title">Lihat Daftar Laporan</h5>
                     <p class="text-muted small mb-0">Pantau laporan sampah yang telah dibuat.</p>
+                </a>
+            </div>
+            @endif
+            @if(Auth::user()->role === 'admin')
+            <div class="col-md-4 mb-3">
+                <a href="{{ route('admin.laporan.index') }}" class="action-card">
+                    <div class="action-icon"><i class="fas fa-tasks"></i></div>
+                    <h5 class="action-title">Kelola Laporan</h5>
+                    <p class="text-muted small mb-0">Ubah status laporan yang masuk dari masyarakat.</p>
                 </a>
             </div>
             @endif

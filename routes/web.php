@@ -49,3 +49,9 @@ Route::prefix('profile')->name('profile.')->group(function () {
 Route::prefix('laporan')->name('laporan.')->middleware('auth')->group(function () {
     Route::get('/', [LaporanController::class, 'index'])->name('index');
 });
+
+// Admin routes (SIP-13 - Kelola Status Laporan)
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    Route::get('/laporan', [ReportController::class, 'adminIndex'])->name('laporan.index');
+    Route::patch('/laporan/{report}/status', [ReportController::class, 'updateStatus'])->name('laporan.updateStatus');
+});

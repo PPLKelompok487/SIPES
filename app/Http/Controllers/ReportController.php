@@ -86,4 +86,47 @@ class ReportController extends Controller
             'lon' => $data['lon'] ?? $validated['lon'],
         ]);
     }
+
+    // =============================================
+    // Admin Methods (SIP-13)
+    // =============================================
+
+    /**
+     * Tampilkan semua laporan untuk admin.
+     */
+    public function adminIndex(Request $request)
+    {
+        if (Auth::guest() || Auth::user()->role !== 'admin') {
+            abort(403, 'Halaman ini hanya dapat diakses oleh admin.');
+        }
+
+        $query = Report::with('user')->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $reports = $query->paginate(10)->withQueryString();
+
+        return view('admin.laporan.index', compact('reports'));
+    }
+
+    /**
+     * Ubah status laporan (hanya admin).
+     */
+    public function updateStatus(Request $request, Report $report)
+    {
+        if (Auth::guest() || Auth::user()->role !== 'admin') {
+            abort(403, 'Aksi ini hanya dapat dilakukan oleh admin.');
+        }
+
+        $validated = $request->validate([
+            'status' => ['required', 'in:diproses,selesai,menunggu,ditolak'],
+        ]);
+
+        $report->update(['status' => $validated['status']]);
+
+        return redirect()->route('admin.laporan.index')
+            ->with('success', 'Status laporan berhasil diubah menjadi "' . ucfirst($validated['status']) . '".');
+    }
 }
