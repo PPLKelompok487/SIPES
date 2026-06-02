@@ -249,6 +249,46 @@
         </div>
         @endif
 
+        <!-- Filter & Search Section -->
+        <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+            <div class="card-body p-4">
+                <form action="{{ route('laporan.index') }}" method="GET" class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold text-muted small">CARI LAPORAN</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" name="search" class="form-control border-start-0" placeholder="Cari deskripsi atau lokasi..." value="{{ request('search') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-muted small">STATUS</label>
+                        <select name="status" class="form-select">
+                            <option value="">Semua Status</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Menunggu</option>
+                            <option value="diverifikasi" {{ request('status') == 'diverifikasi' ? 'selected' : '' }}>Diverifikasi</option>
+                            <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                            <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                            <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <div class="d-grid w-100 gap-2 d-md-flex">
+                            <button type="submit" class="btn btn-success flex-grow-1">
+                                <i class="fas fa-filter me-1"></i> Filter
+                            </button>
+                            @if(request()->anyFilled(['search', 'status']))
+                                <a href="{{ route('laporan.index') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-undo"></i>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="laporan-container">
 
             <!-- Card header row -->

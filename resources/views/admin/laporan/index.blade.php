@@ -340,10 +340,11 @@
     {{-- Stats Chips --}}
     @php
         $total    = \App\Models\Report::count();
-        $menunggu = \App\Models\Report::where('status','pending')->count();
-        $diproses = \App\Models\Report::where('status','diproses')->count();
-        $selesai  = \App\Models\Report::where('status','selesai')->count();
-        $ditolak  = \App\Models\Report::where('status','ditolak')->count();
+        $menunggu = \App\Models\Report::whereIn('status', ['pending', 'menunggu'])->count();
+        $diverifikasi = \App\Models\Report::where('status', 'diverifikasi')->count();
+        $diproses = \App\Models\Report::where('status', 'diproses')->count();
+        $selesai  = \App\Models\Report::where('status', 'selesai')->count();
+        $ditolak  = \App\Models\Report::where('status', 'ditolak')->count();
         $cur      = request('status','');
     @endphp
     <div class="stats-bar mt-4">
@@ -354,6 +355,10 @@
         <a href="{{ route('admin.laporan.index','status=pending') }}"
            class="stat-chip {{ $cur==='pending' ? 'active-chip' : '' }}">
             <span class="dot dot-menunggu"></span>Menunggu <strong>{{ $menunggu }}</strong>
+        </a>
+        <a href="{{ route('admin.laporan.index','status=diverifikasi') }}"
+           class="stat-chip {{ $cur==='diverifikasi' ? 'active-chip' : '' }}">
+            <span class="dot" style="background: #0ea5e9;"></span>Diverifikasi <strong>{{ $diverifikasi }}</strong>
         </a>
         <a href="{{ route('admin.laporan.index','status=diproses') }}"
            class="stat-chip {{ $cur==='diproses' ? 'active-chip' : '' }}">
@@ -375,24 +380,34 @@
             <span class="title">
                 <i class="fas fa-list-ul me-2 text-muted" style="font-size:.85rem;"></i>
                 {{ $reports->total() }} laporan ditemukan
-                @if($cur) &mdash; filter: <em>{{ ucfirst($cur) }}</em> @endif
+                @if($cur || request('search')) &mdash; filter: <em>{{ $cur ? ucfirst($cur) : '' }} {{ request('search') ? '"'.request('search').'"' : '' }}</em> @endif
             </span>
-            <div class="d-flex align-items-center gap-2">
-                <label class="text-muted" style="font-size:.82rem;white-space:nowrap;">
-                    <i class="fas fa-filter me-1"></i>Filter:
-                </label>
-                <form method="GET" action="{{ route('admin.laporan.index') }}">
+            <div class="d-flex align-items-center gap-3">
+                <form method="GET" action="{{ route('admin.laporan.index') }}" class="d-flex align-items-center gap-2">
+                    <div class="input-group input-group-sm" style="width: 250px;">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control border-start-0" placeholder="Cari laporan..." value="{{ request('search') }}">
+                    </div>
+
                     <select name="status" class="filter-select" onchange="this.form.submit()">
                         <option value="">Semua Status</option>
                         <option value="pending"  {{ $cur==='pending'  ? 'selected':'' }}>Menunggu</option>
+                        <option value="diverifikasi" {{ $cur==='diverifikasi' ? 'selected':'' }}>Diverifikasi</option>
                         <option value="diproses" {{ $cur==='diproses' ? 'selected':'' }}>Diproses</option>
                         <option value="selesai"  {{ $cur==='selesai'  ? 'selected':'' }}>Selesai</option>
                         <option value="ditolak"  {{ $cur==='ditolak'  ? 'selected':'' }}>Ditolak</option>
                     </select>
+
+                    <button type="submit" class="btn btn-sm btn-primary px-3" style="border-radius:8px;">
+                        Cari
+                    </button>
                 </form>
-                @if($cur)
+
+                @if($cur || request('search'))
                 <a href="{{ route('admin.laporan.index') }}"
-                   class="btn btn-sm btn-outline-secondary" style="border-radius:8px;font-size:.82rem;">
+                   class="btn btn-sm btn-outline-secondary" style="border-radius:8px;font-size:.82rem;" title="Reset Filter">
                     <i class="fas fa-times"></i>
                 </a>
                 @endif

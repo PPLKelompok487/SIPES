@@ -18,10 +18,27 @@ class LaporanController extends Controller
             abort(403, 'Halaman ini hanya dapat diakses oleh masyarakat (pelapor).');
         }
 
-        $laporans = Auth::user()
-            ->reports()
-            ->with('user')
-            ->orderByDesc('created_at')
+        $query = Auth::user()->reports()->with('user');
+
+        // Filter berdasarkan kata kunci (deskripsi atau lokasi)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter berdasarkan status
+        if ($request->filled('status')) {
+            if ($request->status === 'pending') {
+                $query->whereIn('status', ['pending', 'menunggu']);
+            } else {
+                $query->where('status', $request->status);
+            }
+        }
+
+        $laporans = $query->orderByDesc('created_at')
             ->paginate(10)
             ->withQueryString();
 

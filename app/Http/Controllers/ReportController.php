@@ -102,8 +102,24 @@ class ReportController extends Controller
 
         $query = Report::with('user')->latest();
 
+        // Filter berdasarkan kata kunci (deskripsi, lokasi, atau nama pelapor)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            if ($request->status === 'pending') {
+                $query->whereIn('status', ['pending', 'menunggu']);
+            } else {
+                $query->where('status', $request->status);
+            }
         }
 
         $reports = $query->paginate(10)->withQueryString();
@@ -121,7 +137,7 @@ class ReportController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => ['required', 'in:diproses,selesai,menunggu,ditolak'],
+            'status' => ['required', 'in:pending,menunggu,diverifikasi,diproses,selesai,ditolak'],
         ]);
 
         $report->update(['status' => $validated['status']]);
