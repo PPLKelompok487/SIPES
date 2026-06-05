@@ -8,6 +8,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminUserController;
 
 Route::get('/', function () {
     return view('home');
@@ -50,8 +51,14 @@ Route::prefix('laporan')->name('laporan.')->middleware('auth')->group(function (
     Route::get('/', [LaporanController::class, 'index'])->name('index');
 });
 
-// Admin routes (SIP-13 - Kelola Status Laporan)
+// Admin routes
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    // SIP-13 - Kelola Status Laporan
     Route::get('/laporan', [ReportController::class, 'adminIndex'])->name('laporan.index');
     Route::patch('/laporan/{report}/status', [ReportController::class, 'updateStatus'])->name('laporan.updateStatus');
+
+    // Kelola Data Pengguna
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.updateRole');
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 });

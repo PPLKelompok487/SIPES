@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Laporan - Admin SIPES</title>
+    <title>Kelola Pengguna - Admin SIPES</title>
+    <meta name="description" content="Halaman admin untuk mengelola data pengguna SIPES">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -92,10 +93,9 @@
         .stat-chip:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,.1); color: var(--text); }
         .stat-chip .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
         .dot-all      { background: var(--primary); }
-        .dot-menunggu { background: #f59e0b; }
-        .dot-diproses { background: #f97316; }
-        .dot-selesai  { background: #22c55e; }
-        .dot-ditolak  { background: #ef4444; }
+        .dot-pelapor  { background: #0ea5e9; }
+        .dot-petugas  { background: #f59e0b; }
+        .dot-admin    { background: #ef4444; }
         .stat-chip.active-chip { background: var(--primary); color: #fff; border-color: var(--primary); }
         .stat-chip.active-chip .dot { background: rgba(255,255,255,.6); }
 
@@ -132,89 +132,61 @@
         }
         .filter-select:focus { border-color: var(--accent); }
 
-        /* ── Laporan Row ──────────────────────────── */
-        .laporan-row {
+        /* ── User Row ────────────────────────────── */
+        .user-row {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 1rem;
-            padding: 1.2rem 1.5rem;
+            padding: 1rem 1.5rem;
             border-bottom: 1px solid var(--border);
             transition: background .15s;
         }
-        .laporan-row:last-child { border-bottom: none; }
-        .laporan-row:hover { background: #fafcfb; }
+        .user-row:last-child { border-bottom: none; }
+        .user-row:hover { background: #fafcfb; }
 
-        /* status stripe */
-        .stripe { width: 4px; flex-shrink: 0; border-radius: 4px; align-self: stretch; min-height: 60px; }
-        .stripe-pending, .stripe-menunggu { background: #f59e0b; }
-        .stripe-diproses     { background: #f97316; }
-        .stripe-selesai      { background: #22c55e; }
-        .stripe-ditolak      { background: #ef4444; }
-        .stripe-diverifikasi { background: #0ea5e9; }
+        /* avatar */
+        .user-avatar {
+            width: 44px; height: 44px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 1rem; flex-shrink: 0;
+            color: #fff;
+        }
+        .avatar-pelapor  { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+        .avatar-petugas  { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .avatar-admin    { background: linear-gradient(135deg, #ef4444, #dc2626); }
 
-        /* foto */
-        .laporan-thumb {
-            width: 72px; height: 72px;
+        .user-avatar img {
+            width: 44px; height: 44px; border-radius: 50%;
             object-fit: cover;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            flex-shrink: 0;
-        }
-        .laporan-thumb-placeholder {
-            width: 72px; height: 72px;
-            border-radius: 10px;
-            background: var(--soft);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--accent); font-size: 1.4rem;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
         }
 
-        /* body */
-        .laporan-body { flex: 1; min-width: 0; }
-        .laporan-desc { font-weight: 600; color: var(--primary-dk); margin-bottom: .3rem; font-size: .95rem; line-height: 1.45; }
-        .laporan-meta { font-size: .8rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: .9rem; margin-bottom: .75rem; }
-        .laporan-meta i { margin-right: 3px; }
+        /* info */
+        .user-info { flex: 1; min-width: 0; }
+        .user-name { font-weight: 600; color: var(--primary-dk); font-size: .95rem; line-height: 1.3; }
+        .user-email { font-size: .82rem; color: var(--muted); }
 
-        /* pelapor chip */
-        .pelapor-chip {
-            display: inline-flex; align-items: center; gap: .5rem;
-            background: var(--soft); border-radius: 50px;
-            padding: .25rem .7rem .25rem .35rem;
-            margin-bottom: .85rem;
-        }
-        .pelapor-avatar {
-            width: 26px; height: 26px; border-radius: 50%;
-            background: var(--primary); color: #fff;
-            display: flex; align-items: center; justify-content: center;
-            font-size: .72rem; font-weight: 700; flex-shrink: 0;
-        }
-        .pelapor-name { font-size: .8rem; font-weight: 600; color: var(--primary-dk); }
-
-        /* status badge */
-        .sbadge {
+        /* role badge */
+        .rbadge {
             font-size: .72rem; font-weight: 700;
             padding: .28rem .7rem; border-radius: 50px;
             letter-spacing: .3px; display: inline-block;
+            text-transform: capitalize;
         }
-        .sbadge-pending, .sbadge-menunggu { background: #fef3c7; color: #92400e; }
-        .sbadge-diproses     { background: #ffedd5; color: #9a3412; }
-        .sbadge-selesai      { background: #dcfce7; color: #14532d; }
-        .sbadge-ditolak      { background: #fee2e2; color: #7f1d1d; }
-        .sbadge-diverifikasi { background: #e0f2fe; color: #0c4a6e; }
+        .rbadge-pelapor  { background: #e0f2fe; color: #0c4a6e; }
+        .rbadge-petugas  { background: #fef3c7; color: #92400e; }
+        .rbadge-admin    { background: #fee2e2; color: #7f1d1d; }
 
         /* action area */
-        .laporan-action { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: .7rem; min-width: 200px; }
-        .action-date { font-size: .75rem; color: var(--muted); text-align: right; }
-        .status-form-wrap { display: flex; align-items: center; gap: .5rem; }
-        .sel-status {
+        .user-action { flex-shrink: 0; display: flex; align-items: center; gap: .5rem; }
+        .user-meta { font-size: .78rem; color: var(--muted); white-space: nowrap; margin-right: .5rem; }
+        .sel-role {
             border: 1.5px solid var(--border); border-radius: 8px;
             padding: .38rem .65rem; font-size: .82rem;
             font-family: 'Inter', sans-serif; color: var(--text);
             background: #fff; cursor: pointer; outline: none;
-            transition: border-color .2s; min-width: 130px;
+            transition: border-color .2s; min-width: 110px;
         }
-        .sel-status:focus { border-color: var(--accent); }
+        .sel-role:focus { border-color: var(--accent); }
         .btn-save {
             background: var(--primary); border: none; color: #fff;
             font-size: .82rem; font-weight: 600; padding: .4rem .9rem;
@@ -223,6 +195,22 @@
         }
         .btn-save:hover { background: var(--primary-dk); }
         .btn-save:active { transform: scale(.96); }
+        .btn-delete {
+            background: none; border: 1.5px solid #fecaca; color: #dc2626;
+            font-size: .82rem; font-weight: 600; padding: .4rem .7rem;
+            border-radius: 8px; cursor: pointer; transition: all .2s;
+            white-space: nowrap; font-family: 'Inter', sans-serif;
+        }
+        .btn-delete:hover { background: #fee2e2; border-color: #dc2626; }
+        .btn-delete:active { transform: scale(.96); }
+
+        /* ── Self badge ──────────────────────────── */
+        .self-badge {
+            font-size: .7rem; font-weight: 600;
+            padding: .2rem .55rem; border-radius: 50px;
+            background: var(--soft); color: var(--primary);
+            margin-left: .4rem;
+        }
 
         /* ── Empty state ──────────────────────────── */
         .empty-state { padding: 4rem 1rem; text-align: center; }
@@ -242,6 +230,30 @@
         .alert-danger {
             background: #fef2f2; border: 1px solid #fecaca;
             color: #7f1d1d; border-radius: 10px;
+        }
+
+        /* ── Delete Modal ────────────────────────── */
+        .modal-content { border: none; border-radius: 16px; }
+        .modal-header { border-bottom: 1px solid var(--border); }
+        .modal-footer { border-top: 1px solid var(--border); }
+        .btn-cancel-modal {
+            background: #f3f4f6; border: none; color: var(--text);
+            font-weight: 600; padding: .5rem 1.2rem; border-radius: 8px;
+            font-family: 'Inter', sans-serif; cursor: pointer;
+        }
+        .btn-cancel-modal:hover { background: #e5e7eb; }
+        .btn-confirm-delete {
+            background: #dc2626; border: none; color: #fff;
+            font-weight: 600; padding: .5rem 1.2rem; border-radius: 8px;
+            font-family: 'Inter', sans-serif; cursor: pointer;
+        }
+        .btn-confirm-delete:hover { background: #b91c1c; }
+
+        /* ── Responsive ──────────────────────────── */
+        @media (max-width: 768px) {
+            .user-row { flex-wrap: wrap; }
+            .user-action { width: 100%; justify-content: flex-end; margin-top: .5rem; }
+            .user-meta { display: none; }
         }
     </style>
 </head>
@@ -265,13 +277,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ route('admin.laporan.index') }}">
+                    <a class="nav-link {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}"
+                       href="{{ route('admin.laporan.index') }}">
                         <i class="fas fa-tasks me-1"></i>Kelola Laporan
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
-                       href="{{ route('admin.users.index') }}">
+                    <a class="nav-link active" href="{{ route('admin.users.index') }}">
                         <i class="fas fa-users-cog me-1"></i>Kelola Pengguna
                     </a>
                 </li>
@@ -318,8 +330,8 @@
     <div class="container">
         <div class="d-flex align-items-center justify-content-between">
             <div>
-                <h1><i class="fas fa-tasks me-2"></i>Kelola Laporan</h1>
-                <p>Pantau dan ubah status laporan yang masuk dari masyarakat.</p>
+                <h1><i class="fas fa-users-cog me-2"></i>Kelola Pengguna</h1>
+                <p>Lihat, ubah role, atau hapus akun pengguna pada sistem.</p>
             </div>
             <span class="admin-pill"><i class="fas fa-shield-alt me-1"></i>Admin</span>
         </div>
@@ -345,38 +357,28 @@
 
     {{-- Stats Chips --}}
     @php
-        $total    = \App\Models\Report::count();
-        $menunggu = \App\Models\Report::whereIn('status', ['pending', 'menunggu'])->count();
-        $diverifikasi = \App\Models\Report::where('status', 'diverifikasi')->count();
-        $diproses = \App\Models\Report::where('status', 'diproses')->count();
-        $selesai  = \App\Models\Report::where('status', 'selesai')->count();
-        $ditolak  = \App\Models\Report::where('status', 'ditolak')->count();
-        $cur      = request('status','');
+        $totalUsers   = \App\Models\User::count();
+        $pelaporCount = \App\Models\User::where('role', 'pelapor')->count();
+        $petugasCount = \App\Models\User::where('role', 'petugas')->count();
+        $adminCount   = \App\Models\User::where('role', 'admin')->count();
+        $curRole      = request('role', '');
     @endphp
     <div class="stats-bar mt-4">
-        <a href="{{ route('admin.laporan.index') }}"
-           class="stat-chip {{ $cur==='' ? 'active-chip' : '' }}">
-            <span class="dot dot-all"></span>Semua <strong>{{ $total }}</strong>
+        <a href="{{ route('admin.users.index') }}"
+           class="stat-chip {{ $curRole==='' ? 'active-chip' : '' }}">
+            <span class="dot dot-all"></span>Semua <strong>{{ $totalUsers }}</strong>
         </a>
-        <a href="{{ route('admin.laporan.index','status=pending') }}"
-           class="stat-chip {{ $cur==='pending' ? 'active-chip' : '' }}">
-            <span class="dot dot-menunggu"></span>Menunggu <strong>{{ $menunggu }}</strong>
+        <a href="{{ route('admin.users.index', ['role' => 'pelapor']) }}"
+           class="stat-chip {{ $curRole==='pelapor' ? 'active-chip' : '' }}">
+            <span class="dot dot-pelapor"></span>Pelapor <strong>{{ $pelaporCount }}</strong>
         </a>
-        <a href="{{ route('admin.laporan.index','status=diverifikasi') }}"
-           class="stat-chip {{ $cur==='diverifikasi' ? 'active-chip' : '' }}">
-            <span class="dot" style="background: #0ea5e9;"></span>Diverifikasi <strong>{{ $diverifikasi }}</strong>
+        <a href="{{ route('admin.users.index', ['role' => 'petugas']) }}"
+           class="stat-chip {{ $curRole==='petugas' ? 'active-chip' : '' }}">
+            <span class="dot dot-petugas"></span>Petugas <strong>{{ $petugasCount }}</strong>
         </a>
-        <a href="{{ route('admin.laporan.index','status=diproses') }}"
-           class="stat-chip {{ $cur==='diproses' ? 'active-chip' : '' }}">
-            <span class="dot dot-diproses"></span>Diproses <strong>{{ $diproses }}</strong>
-        </a>
-        <a href="{{ route('admin.laporan.index','status=selesai') }}"
-           class="stat-chip {{ $cur==='selesai' ? 'active-chip' : '' }}">
-            <span class="dot dot-selesai"></span>Selesai <strong>{{ $selesai }}</strong>
-        </a>
-        <a href="{{ route('admin.laporan.index','status=ditolak') }}"
-           class="stat-chip {{ $cur==='ditolak' ? 'active-chip' : '' }}">
-            <span class="dot dot-ditolak"></span>Ditolak <strong>{{ $ditolak }}</strong>
+        <a href="{{ route('admin.users.index', ['role' => 'admin']) }}"
+           class="stat-chip {{ $curRole==='admin' ? 'active-chip' : '' }}">
+            <span class="dot dot-admin"></span>Admin <strong>{{ $adminCount }}</strong>
         </a>
     </div>
 
@@ -385,34 +387,34 @@
         <div class="main-card-header">
             <span class="title">
                 <i class="fas fa-list-ul me-2 text-muted" style="font-size:.85rem;"></i>
-                {{ $reports->total() }} laporan ditemukan
-                @if($cur || request('search')) &mdash; filter: <em>{{ $cur ? ucfirst($cur) : '' }} {{ request('search') ? '"'.request('search').'"' : '' }}</em> @endif
+                {{ $users->total() }} pengguna ditemukan
+                @if($curRole || request('search')) &mdash; filter: <em>{{ $curRole ? ucfirst($curRole) : '' }} {{ request('search') ? '"'.request('search').'"' : '' }}</em> @endif
             </span>
             <div class="d-flex align-items-center gap-3">
-                <form method="GET" action="{{ route('admin.laporan.index') }}" class="d-flex align-items-center gap-2">
+                <form method="GET" action="{{ route('admin.users.index') }}" class="d-flex align-items-center gap-2">
                     <div class="input-group input-group-sm" style="width: 250px;">
                         <span class="input-group-text bg-white border-end-0">
                             <i class="fas fa-search text-muted"></i>
                         </span>
-                        <input type="text" name="search" class="form-control border-start-0" placeholder="Cari laporan..." value="{{ request('search') }}">
+                        <input type="text" name="search" class="form-control border-start-0"
+                               placeholder="Cari nama atau email..." value="{{ request('search') }}"
+                               id="search-input">
                     </div>
 
-                    <select name="status" class="filter-select" onchange="this.form.submit()">
-                        <option value="">Semua Status</option>
-                        <option value="pending"  {{ $cur==='pending'  ? 'selected':'' }}>Menunggu</option>
-                        <option value="diverifikasi" {{ $cur==='diverifikasi' ? 'selected':'' }}>Diverifikasi</option>
-                        <option value="diproses" {{ $cur==='diproses' ? 'selected':'' }}>Diproses</option>
-                        <option value="selesai"  {{ $cur==='selesai'  ? 'selected':'' }}>Selesai</option>
-                        <option value="ditolak"  {{ $cur==='ditolak'  ? 'selected':'' }}>Ditolak</option>
+                    <select name="role" class="filter-select" onchange="this.form.submit()" id="filter-role">
+                        <option value="">Semua Role</option>
+                        <option value="pelapor"  {{ $curRole==='pelapor'  ? 'selected':'' }}>Pelapor</option>
+                        <option value="petugas"  {{ $curRole==='petugas'  ? 'selected':'' }}>Petugas</option>
+                        <option value="admin"    {{ $curRole==='admin'    ? 'selected':'' }}>Admin</option>
                     </select>
 
-                    <button type="submit" class="btn btn-sm btn-primary px-3" style="border-radius:8px;">
+                    <button type="submit" class="btn btn-sm btn-primary px-3" style="border-radius:8px;" id="btn-search">
                         Cari
                     </button>
                 </form>
 
-                @if($cur || request('search'))
-                <a href="{{ route('admin.laporan.index') }}"
+                @if($curRole || request('search'))
+                <a href="{{ route('admin.users.index') }}"
                    class="btn btn-sm btn-outline-secondary" style="border-radius:8px;font-size:.82rem;" title="Reset Filter">
                     <i class="fas fa-times"></i>
                 </a>
@@ -420,77 +422,72 @@
             </div>
         </div>
 
-        {{-- List --}}
-        @if($reports->isEmpty())
+        {{-- User List --}}
+        @if($users->isEmpty())
             <div class="empty-state">
-                <i class="fas fa-clipboard-check"></i>
-                <h6>Tidak ada laporan</h6>
-                <p>Belum ada laporan yang masuk atau sesuai dengan filter yang dipilih.</p>
+                <i class="fas fa-users-slash"></i>
+                <h6>Tidak ada pengguna</h6>
+                <p>Belum ada pengguna yang terdaftar atau sesuai dengan filter yang dipilih.</p>
             </div>
         @else
-            @foreach($reports as $report)
-            @php
-                $sc = [
-                    'pending'      => ['key'=>'pending',      'label'=>'Menunggu'],
-                    'menunggu'     => ['key'=>'menunggu',     'label'=>'Menunggu'],
-                    'diproses'     => ['key'=>'diproses',     'label'=>'Diproses'],
-                    'selesai'      => ['key'=>'selesai',      'label'=>'Selesai'],
-                    'ditolak'      => ['key'=>'ditolak',      'label'=>'Ditolak'],
-                    'diverifikasi' => ['key'=>'diverifikasi', 'label'=>'Diverifikasi'],
-                ][$report->status] ?? ['key'=>'pending','label'=>'Menunggu'];
-            @endphp
-            <div class="laporan-row">
-                {{-- Stripe warna status --}}
-                <div class="stripe stripe-{{ $sc['key'] }}"></div>
-
-                {{-- Foto --}}
-                @if($report->photo_path)
-                    <img src="{{ asset('storage/'.$report->photo_path) }}"
-                         class="laporan-thumb" alt="Foto Laporan">
+            @foreach($users as $user)
+            <div class="user-row" id="user-row-{{ $user->id }}">
+                {{-- Avatar --}}
+                @if($user->profile_photo_path)
+                    <div class="user-avatar avatar-{{ $user->role }}">
+                        <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="{{ $user->name }}">
+                    </div>
                 @else
-                    <div class="laporan-thumb-placeholder">
-                        <i class="fas fa-image"></i>
+                    <div class="user-avatar avatar-{{ $user->role }}">
+                        {{ strtoupper(substr($user->name, 0, 1)) }}
                     </div>
                 @endif
 
-                {{-- Body --}}
-                <div class="laporan-body">
-                    <div class="laporan-desc">{{ Str::limit($report->description, 90) }}</div>
-                    <div class="laporan-meta">
-                        <span><i class="fas fa-map-marker-alt"></i>{{ $report->location }}</span>
-                        <span><i class="fas fa-hashtag"></i>#{{ $report->id }}</span>
+                {{-- Info --}}
+                <div class="user-info">
+                    <div class="user-name">
+                        {{ $user->name }}
+                        @if($user->id === Auth::id())
+                            <span class="self-badge">Anda</span>
+                        @endif
                     </div>
-                    <div class="pelapor-chip">
-                        <div class="pelapor-avatar">
-                            {{ strtoupper(substr($report->user->name ?? '?', 0, 1)) }}
-                        </div>
-                        <span class="pelapor-name">{{ $report->user->name ?? 'Tidak diketahui' }}</span>
-                    </div>
-                    <span class="sbadge sbadge-{{ $sc['key'] }}">{{ $sc['label'] }}</span>
+                    <div class="user-email">{{ $user->email }}</div>
                 </div>
 
+                {{-- Role Badge --}}
+                <span class="rbadge rbadge-{{ $user->role }}">{{ ucfirst($user->role) }}</span>
+
                 {{-- Action --}}
-                <div class="laporan-action">
-                    <span class="action-date">
-                        <i class="fas fa-clock me-1"></i>
-                        {{ $report->created_at->format('d M Y') }}<br>
-                        <span style="font-size:.7rem;">{{ $report->created_at->format('H:i') }} WIB</span>
+                <div class="user-action">
+                    <span class="user-meta">
+                        <i class="fas fa-calendar-alt me-1"></i>{{ $user->created_at->format('d M Y') }}
                     </span>
-                    <form method="POST"
-                          action="{{ route('admin.laporan.updateStatus', $report->id) }}"
-                          class="status-form-wrap">
-                        @csrf
-                        @method('PATCH')
-                        <select name="status" class="sel-status">
-                            <option value="pending"  {{ $report->status==='pending'  ? 'selected':'' }}>Menunggu</option>
-                            <option value="diproses" {{ $report->status==='diproses' ? 'selected':'' }}>Diproses</option>
-                            <option value="selesai"  {{ $report->status==='selesai'  ? 'selected':'' }}>Selesai</option>
-                            <option value="ditolak"  {{ $report->status==='ditolak'  ? 'selected':'' }}>Ditolak</option>
-                        </select>
-                        <button type="submit" class="btn-save" id="save-{{ $report->id }}">
-                            <i class="fas fa-save me-1"></i>Simpan
+
+                    @if($user->id !== Auth::id())
+                        {{-- Update Role --}}
+                        <form method="POST"
+                              action="{{ route('admin.users.updateRole', $user->id) }}"
+                              class="d-flex align-items-center gap-2">
+                            @csrf
+                            @method('PATCH')
+                            <select name="role" class="sel-role" id="select-role-{{ $user->id }}">
+                                <option value="pelapor"  {{ $user->role==='pelapor'  ? 'selected':'' }}>Pelapor</option>
+                                <option value="petugas"  {{ $user->role==='petugas'  ? 'selected':'' }}>Petugas</option>
+                                <option value="admin"    {{ $user->role==='admin'    ? 'selected':'' }}>Admin</option>
+                            </select>
+                            <button type="submit" class="btn-save" id="save-role-{{ $user->id }}">
+                                <i class="fas fa-save me-1"></i>Simpan
+                            </button>
+                        </form>
+
+                        {{-- Delete --}}
+                        <button type="button" class="btn-delete" id="btn-delete-{{ $user->id }}"
+                                onclick="confirmDelete({{ $user->id }}, '{{ addslashes($user->name) }}')">
+                            <i class="fas fa-trash-alt"></i>
                         </button>
-                    </form>
+                    @else
+                        <span class="text-muted" style="font-size:.8rem;font-style:italic;">—</span>
+                    @endif
                 </div>
             </div>
             @endforeach
@@ -498,23 +495,71 @@
     </div>
 
     {{-- Pagination --}}
-    @if($reports->hasPages())
+    @if($users->hasPages())
     <div class="d-flex justify-content-center mt-4">
-        {{ $reports->links('pagination::bootstrap-5') }}
+        {{ $users->links('pagination::bootstrap-5') }}
     </div>
     @endif
 
 </div>
 
+{{-- Delete Confirmation Modal --}}
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>Konfirmasi Hapus
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin menghapus pengguna <strong id="deleteUserName"></strong>?</p>
+                <div class="alert alert-danger py-2 mb-0" style="font-size:.85rem;">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Semua laporan yang dibuat oleh pengguna ini juga akan <strong>ikut dihapus</strong> secara permanen.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel-modal" data-bs-dismiss="modal">Batal</button>
+                <form method="POST" id="deleteForm">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn-confirm-delete" id="btn-confirm-delete">
+                        <i class="fas fa-trash-alt me-1"></i>Hapus Pengguna
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Visual feedback saat simpan diklik
-    document.querySelectorAll('.status-form-wrap').forEach(form => {
+    // Delete confirmation modal
+    function confirmDelete(userId, userName) {
+        document.getElementById('deleteUserName').textContent = userName;
+        document.getElementById('deleteForm').action = '/admin/users/' + userId;
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+
+    // Visual feedback saat simpan role diklik
+    document.querySelectorAll('.user-action form').forEach(form => {
         form.addEventListener('submit', function() {
             const btn = this.querySelector('.btn-save');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan…';
-            btn.disabled = true;
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan…';
+                btn.disabled = true;
+            }
         });
+    });
+
+    // Visual feedback saat hapus diklik
+    document.getElementById('deleteForm').addEventListener('submit', function() {
+        const btn = document.getElementById('btn-confirm-delete');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menghapus…';
+        btn.disabled = true;
     });
 </script>
 </body>

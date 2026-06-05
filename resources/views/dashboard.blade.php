@@ -189,6 +189,11 @@
                             <i class="fas fa-tasks me-1"></i>Kelola Laporan
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                            <i class="fas fa-users-cog me-1"></i>Kelola Pengguna
+                        </a>
+                    </li>
                     @endif
                 </ul>
                 <ul class="navbar-nav ms-auto">
@@ -314,6 +319,13 @@
                     <div class="action-icon"><i class="fas fa-tasks"></i></div>
                     <h5 class="action-title">Kelola Laporan</h5>
                     <p class="text-muted small mb-0">Ubah status laporan yang masuk dari masyarakat.</p>
+                </a>
+            </div>
+            <div class="col-md-4 mb-3">
+                <a href="{{ route('admin.users.index') }}" class="action-card">
+                    <div class="action-icon"><i class="fas fa-users-cog"></i></div>
+                    <h5 class="action-title">Kelola Pengguna</h5>
+                    <p class="text-muted small mb-0">Lihat, ubah role, atau hapus akun pengguna.</p>
                 </a>
             </div>
             @endif
