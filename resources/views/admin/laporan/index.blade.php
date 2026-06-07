@@ -30,8 +30,8 @@
         /* ── Navbar ───────────────────────────────── */
         .navbar {
             background: var(--primary);
-            box-shadow: 0 2px 12px rgba(0,0,0,.12);
-            padding: .85rem 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,.1);
+            padding: 1rem 0;
         }
         .navbar-brand {
             color: #fff !important;
