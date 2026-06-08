@@ -145,4 +145,38 @@ class ReportController extends Controller
         return redirect()->route('admin.laporan.index')
             ->with('success', 'Status laporan berhasil diubah menjadi "' . ucfirst($validated['status']) . '".');
     }
+
+    /**
+     * Tampilkan detail laporan untuk admin.
+     */
+    public function adminShow(Report $report)
+    {
+        if (Auth::guest() || Auth::user()->role !== 'admin') {
+            abort(403, 'Halaman ini hanya dapat diakses oleh admin.');
+        }
+
+        $report->load('user');
+
+        return view('admin.laporan.show', compact('report'));
+    }
+
+    /**
+     * Hapus laporan (hanya admin).
+     */
+    public function adminDestroy(Report $report)
+    {
+        if (Auth::guest() || Auth::user()->role !== 'admin') {
+            abort(403, 'Aksi ini hanya dapat dilakukan oleh admin.');
+        }
+
+        // Hapus foto dari storage jika ada
+        if ($report->photo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($report->photo_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($report->photo_path);
+        }
+
+        $report->delete();
+
+        return redirect()->route('admin.laporan.index')
+            ->with('success', 'Laporan #' . $report->id . ' berhasil dihapus.');
+    }
 }

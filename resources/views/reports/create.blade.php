@@ -7,13 +7,40 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-green: #2d6a4f;
+            --accent-green: #52b788;
+            --soft-green: #d8f3dc;
+            --dark-green: #1b4332;
+        }
         body { background-color: #f4f7f6; color: #333; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .navbar { background: #2d6a4f; }
-        .navbar-brand, .nav-link { color: white !important; }
+        
+        /* Navbar Styles */
+        .navbar {
+            background: var(--primary-green);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand i { margin-right: 10px; }
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active { color: white !important; }
+        
         .page-header { margin: 2rem 0 1rem; }
         .report-card { border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         .form-label { font-weight: 600; }
-        .btn-primary { background: #2d6a4f; border: none; }
+        .btn-primary { background: var(--primary-green); border: none; }
     </style>
 </head>
 <body>
