@@ -51,9 +51,11 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    @if(Auth::user()->role === 'pelapor')
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('reports.create') }}">Lapor Baru</a>
                     </li>
+                    @endif
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
@@ -91,7 +93,9 @@
                 <h1 class="h3">Riwayat Laporan</h1>
                 <p class="text-muted mb-0">Laporan sampah yang Anda kirim sebagai pelapor.</p>
             </div>
+            @if(Auth::user()->role === 'pelapor')
             <a href="{{ route('reports.create') }}" class="btn btn-success"><i class="fas fa-plus me-2"></i>Tambah Laporan</a>
+            @endif
         </div>
 
         @if($reports->isEmpty())

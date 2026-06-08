@@ -290,6 +290,7 @@
         <!-- Quick Actions Row -->
         <h4 class="mb-3 text-secondary fw-bold" style="font-size: 1.1rem;">Akses Cepat</h4>
         <div class="row">
+            @if(Auth::user()->role === 'pelapor')
             <div class="col-md-4 mb-3">
                 <a href="{{ route('reports.create') }}" class="action-card">
                     <div class="action-icon">
@@ -299,7 +300,6 @@
                     <p class="text-muted small mb-0">Laporkan masalah kebersihan di sekitar Anda.</p>
                 </a>
             </div>
-            @if(Auth::user()->role === 'pelapor')
             <div class="col-md-4 mb-3">
                 <a href="{{ route('laporan.index') }}" class="action-card">
                     <div class="action-icon"><i class="fas fa-clipboard-list"></i></div>

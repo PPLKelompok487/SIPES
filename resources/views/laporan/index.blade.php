@@ -297,9 +297,11 @@
                     <i class="fas fa-clipboard-list me-1"></i>
                     {{ $laporans->total() }} Laporan ditemukan
                 </small>
+                @if(Auth::user()->role === 'pelapor')
                 <a href="{{ route('reports.create') }}" class="btn btn-sm btn-success">
                     <i class="fas fa-plus me-1"></i> Buat Laporan
                 </a>
+                @endif
             </div>
 
             @if($laporans->isEmpty())
