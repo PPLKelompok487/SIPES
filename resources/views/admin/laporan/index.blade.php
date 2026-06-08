@@ -485,6 +485,20 @@
                             <i class="fas fa-save me-1"></i>Simpan
                         </button>
                     </form>
+                    <div class="d-flex align-items-center gap-2" style="margin-top: .3rem;">
+                        <a href="{{ route('admin.laporan.show', $report->id) }}"
+                           class="btn btn-sm btn-outline-primary" style="border-radius:8px; font-size:.78rem; font-weight:600; padding:.3rem .7rem;">
+                            <i class="fas fa-eye me-1"></i>Detail
+                        </a>
+                        <form method="POST" action="{{ route('admin.laporan.destroy', $report->id) }}"
+                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus Laporan #{{ $report->id }}? Tindakan ini tidak dapat dibatalkan.')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius:8px; font-size:.78rem; font-weight:600; padding:.3rem .7rem;">
+                                <i class="fas fa-trash-alt me-1"></i>Hapus
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
             @endforeach

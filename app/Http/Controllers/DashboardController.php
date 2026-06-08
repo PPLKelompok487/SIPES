@@ -11,14 +11,20 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         
-        // Get statistics for current user's reports
-        $totalLaporan = Report::where('user_id', $user->id)->count();
-        $laporanDiproses = Report::where('user_id', $user->id)
-            ->where('status', 'processing')
-            ->count();
-        $laporanSelesai = Report::where('user_id', $user->id)
-            ->where('status', 'completed')
-            ->count();
+        // Admin melihat statistik SEMUA laporan, pelapor hanya miliknya sendiri
+        if ($user->role === 'admin') {
+            $totalLaporan = Report::count();
+            $laporanDiproses = Report::where('status', 'diproses')->count();
+            $laporanSelesai = Report::where('status', 'selesai')->count();
+        } else {
+            $totalLaporan = Report::where('user_id', $user->id)->count();
+            $laporanDiproses = Report::where('user_id', $user->id)
+                ->where('status', 'diproses')
+                ->count();
+            $laporanSelesai = Report::where('user_id', $user->id)
+                ->where('status', 'selesai')
+                ->count();
+        }
         
         return view('dashboard', compact('totalLaporan', 'laporanDiproses', 'laporanSelesai'));
     }
