@@ -18,11 +18,19 @@ class ReportController extends Controller
 
     public function create()
     {
+        if (Auth::guest() || Auth::user()->role !== 'pelapor') {
+            abort(403, 'Hanya pelapor yang dapat membuat laporan.');
+        }
+
         return view('reports.create');
     }
 
     public function store(Request $request)
     {
+        if (Auth::guest() || Auth::user()->role !== 'pelapor') {
+            abort(403, 'Hanya pelapor yang dapat membuat laporan.');
+        }
+
         $validated = $request->validate([
             'description' => ['required', 'string', 'max:2000'],
             'location' => ['required', 'string', 'max:255'],
