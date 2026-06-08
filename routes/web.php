@@ -55,10 +55,13 @@ Route::prefix('laporan')->name('laporan.')->middleware('auth')->group(function (
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // SIP-13 - Kelola Status Laporan
     Route::get('/laporan', [ReportController::class, 'adminIndex'])->name('laporan.index');
+    Route::get('/laporan/{report}', [ReportController::class, 'adminShow'])->name('laporan.show');
     Route::patch('/laporan/{report}/status', [ReportController::class, 'updateStatus'])->name('laporan.updateStatus');
+    Route::delete('/laporan/{report}', [ReportController::class, 'adminDestroy'])->name('laporan.destroy');
 
     // Kelola Data Pengguna
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.updateRole');
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 });
+
