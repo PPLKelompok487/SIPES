@@ -351,7 +351,7 @@
                                 </div>
 
                                 <div class="d-flex justify-content-end">
-                                    <a href="#" class="btn btn-sm btn-outline-success">
+                                    <a href="{{ route('laporan.show', $laporan->id) }}" class="btn btn-sm btn-outline-success">
                                         Lihat Detail <i class="fas fa-arrow-right ms-1"></i>
                                     </a>
                                 </div>

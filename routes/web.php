@@ -49,6 +49,7 @@ Route::prefix('profile')->name('profile.')->group(function () {
 // Laporan routes (FR-05 - Lihat Daftar Laporan)
 Route::prefix('laporan')->name('laporan.')->middleware('auth')->group(function () {
     Route::get('/', [LaporanController::class, 'index'])->name('index');
+    Route::get('/{report}', [LaporanController::class, 'show'])->name('show');
 });
 
 // Admin routes
