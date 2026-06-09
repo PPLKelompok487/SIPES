@@ -44,4 +44,14 @@ class LaporanController extends Controller
 
         return view('laporan.index', compact('laporans'));
     }
+
+    public function show(Report $report)
+    {
+        // Pastikan hanya pelapor yang bisa melihat detail laporannya sendiri
+        if (Auth::user()->role !== 'pelapor' || $report->user_id !== Auth::id()) {
+            abort(403, 'Anda tidak memiliki akses ke laporan ini.');
+        }
+
+        return view('laporan.show', compact('report'));
+    }
 }
