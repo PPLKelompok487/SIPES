@@ -406,10 +406,13 @@
     @endif
 
     {{-- Breadcrumb --}}
-    <div class="breadcrumb-custom mt-4">
-        <a href="{{ route('admin.laporan.index') }}"><i class="fas fa-arrow-left me-1"></i>Kelola Laporan</a>
-        <span class="separator">/</span>
-        <span class="current">Detail Laporan #{{ $report->id }}</span>
+    <div class="breadcrumb-custom mt-4 mb-4">
+        <a href="{{ route('admin.laporan.index') }}" class="btn-back mb-3">
+            <i class="fas fa-arrow-left"></i>Kembali ke Daftar Laporan
+        </a>
+        <div class="mt-2">
+            <span class="current">Detail Laporan #{{ $report->id }}</span>
+        </div>
     </div>
 
     @php
@@ -528,7 +531,7 @@
                                 @endif
                             </select>
                         </div>
-                        @if((Auth::user()->role === 'admin' && in_array($report->status, ['pending', 'menunggu'])) || 
+                        @if((Auth::user()->role === 'admin' && in_array($report->status, ['pending', 'menunggu'])) ||
                             (Auth::user()->role === 'petugas' && in_array($report->status, ['diverifikasi', 'diproses'])))
                         <button type="submit" class="btn-save-status w-100" id="btnSaveStatus">
                             <i class="fas fa-save me-1"></i>Simpan Status
@@ -559,13 +562,6 @@
             </div>
             @endif
         </div>
-    </div>
-
-    {{-- Back Button --}}
-    <div class="mt-4">
-        <a href="{{ route('admin.laporan.index') }}" class="btn-back">
-            <i class="fas fa-arrow-left"></i>Kembali ke Daftar Laporan
-        </a>
     </div>
 
 </div>
