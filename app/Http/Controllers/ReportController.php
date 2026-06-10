@@ -104,8 +104,8 @@ class ReportController extends Controller
      */
     public function adminIndex(Request $request)
     {
-        if (Auth::guest() || Auth::user()->role !== 'admin') {
-            abort(403, 'Halaman ini hanya dapat diakses oleh admin.');
+        if (Auth::guest() || (Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas')) {
+            abort(403, 'Halaman ini hanya dapat diakses oleh admin atau petugas.');
         }
 
         $query = Report::with('user')->latest();
@@ -140,8 +140,8 @@ class ReportController extends Controller
      */
     public function updateStatus(Request $request, Report $report)
     {
-        if (Auth::guest() || Auth::user()->role !== 'admin') {
-            abort(403, 'Aksi ini hanya dapat dilakukan oleh admin.');
+        if (Auth::guest() || (Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas')) {
+            abort(403, 'Aksi ini hanya dapat dilakukan oleh admin atau petugas.');
         }
 
         $validated = $request->validate([
@@ -159,8 +159,8 @@ class ReportController extends Controller
      */
     public function adminShow(Report $report)
     {
-        if (Auth::guest() || Auth::user()->role !== 'admin') {
-            abort(403, 'Halaman ini hanya dapat diakses oleh admin.');
+        if (Auth::guest() || (Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas')) {
+            abort(403, 'Halaman ini hanya dapat diakses oleh admin atau petugas.');
         }
 
         $report->load('user');

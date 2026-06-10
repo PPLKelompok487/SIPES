@@ -183,12 +183,14 @@
                         <a class="nav-link {{ request()->routeIs('laporan.*') ? 'active' : '' }}" href="{{ route('laporan.index') }}">Daftar Laporan</a>
                     </li>
                     @endif
-                    @if(Auth::user()->role === 'admin')
+                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'petugas')
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}" href="{{ route('admin.laporan.index') }}">
                             <i class="fas fa-tasks me-1"></i>Kelola Laporan
                         </a>
                     </li>
+                    @endif
+                    @if(Auth::user()->role === 'admin')
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                             <i class="fas fa-users-cog me-1"></i>Kelola Pengguna

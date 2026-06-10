@@ -269,12 +269,14 @@
                         <i class="fas fa-tasks me-1"></i>Kelola Laporan
                     </a>
                 </li>
+                @if(Auth::user()->role === 'admin')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                        href="{{ route('admin.users.index') }}">
                         <i class="fas fa-users-cog me-1"></i>Kelola Pengguna
                     </a>
                 </li>
+                @endif
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
@@ -321,7 +323,11 @@
                 <h1><i class="fas fa-tasks me-2"></i>Kelola Laporan</h1>
                 <p>Pantau dan ubah status laporan yang masuk dari masyarakat.</p>
             </div>
+            @if(Auth::user()->role === 'admin')
             <span class="admin-pill"><i class="fas fa-shield-alt me-1"></i>Admin</span>
+            @else
+            <span class="admin-pill" style="background: rgba(82, 183, 136, 0.2);"><i class="fas fa-user-shield me-1"></i>Petugas</span>
+            @endif
         </div>
     </div>
 </div>
@@ -496,6 +502,7 @@
                            class="btn btn-sm btn-outline-primary" style="border-radius:8px; font-size:.78rem; font-weight:600; padding:.3rem .7rem;">
                             <i class="fas fa-eye me-1"></i>Detail
                         </a>
+                        @if(Auth::user()->role === 'admin')
                         <form method="POST" action="{{ route('admin.laporan.destroy', $report->id) }}"
                               onsubmit="return confirm('Apakah Anda yakin ingin menghapus Laporan #{{ $report->id }}? Tindakan ini tidak dapat dibatalkan.')">
                             @csrf
@@ -504,6 +511,7 @@
                                 <i class="fas fa-trash-alt me-1"></i>Hapus
                             </button>
                         </form>
+                        @endif
                     </div>
                 </div>
             </div>
