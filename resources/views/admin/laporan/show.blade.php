@@ -528,7 +528,7 @@
                                 @endif
                             </select>
                         </div>
-                        @if((Auth::user()->role === 'admin' && in_array($report->status, ['pending', 'menunggu'])) ||
+                        @if((Auth::user()->role === 'admin' && in_array($report->status, ['pending', 'menunggu'])) || 
                             (Auth::user()->role === 'petugas' && in_array($report->status, ['diverifikasi', 'diproses'])))
                         <button type="submit" class="btn-save-status w-100" id="btnSaveStatus">
                             <i class="fas fa-save me-1"></i>Simpan Status
