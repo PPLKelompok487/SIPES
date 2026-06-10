@@ -484,18 +484,35 @@
                     </span>
                     <form method="POST"
                           action="{{ route('admin.laporan.updateStatus', $report->id) }}"
-                          class="status-form-wrap">
+                          class="status-form-wrap"
+                          data-role="{{ Auth::user()->role }}">
                         @csrf
                         @method('PATCH')
                         <select name="status" class="sel-status">
-                            <option value="pending"  {{ $report->status==='pending'  ? 'selected':'' }}>Menunggu</option>
-                            <option value="diproses" {{ $report->status==='diproses' ? 'selected':'' }}>Diproses</option>
-                            <option value="selesai"  {{ $report->status==='selesai'  ? 'selected':'' }}>Selesai</option>
-                            <option value="ditolak"  {{ $report->status==='ditolak'  ? 'selected':'' }}>Ditolak</option>
+                            @if(Auth::user()->role === 'admin' && in_array($report->status, ['pending', 'menunggu']))
+                                <option value="" disabled selected>Pilih Aksi</option>
+                                <option value="diverifikasi">Diverifikasi</option>
+                                <option value="ditolak">Ditolak</option>
+                            @elseif(Auth::user()->role === 'petugas')
+                                @if($report->status === 'diverifikasi')
+                                    <option value="" disabled selected>Pilih Aksi</option>
+                                    <option value="diproses">Diproses</option>
+                                @elseif($report->status === 'diproses')
+                                    <option value="" disabled selected>Pilih Aksi</option>
+                                    <option value="selesai">Selesai</option>
+                                @else
+                                    <option value="" disabled selected>&mdash;</option>
+                                @endif
+                            @else
+                                <option value="" disabled selected>&mdash;</option>
+                            @endif
                         </select>
+                        @if((Auth::user()->role === 'admin' && in_array($report->status, ['pending', 'menunggu'])) ||
+                            (Auth::user()->role === 'petugas' && in_array($report->status, ['diverifikasi', 'diproses'])))
                         <button type="submit" class="btn-save" id="save-{{ $report->id }}">
                             <i class="fas fa-save me-1"></i>Simpan
                         </button>
+                        @endif
                     </form>
                     <div class="d-flex align-items-center gap-2" style="margin-top: .3rem;">
                         <a href="{{ route('admin.laporan.show', $report->id) }}"
@@ -530,9 +547,33 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Visual feedback saat simpan diklik
+    // Visual feedback & Konfirmasi saat simpan diklik
     document.querySelectorAll('.status-form-wrap').forEach(form => {
-        form.addEventListener('submit', function() {
+        form.addEventListener('submit', function(e) {
+            const role = "{{ Auth::user()->role }}";
+            const select = this.querySelector('.sel-status');
+            const newStatus = select.value;
+            let confirmMsg = '';
+
+            if (role === 'admin') {
+                if (newStatus === 'diverifikasi') {
+                    confirmMsg = 'Apakah Anda yakin ingin memverifikasi laporan ini?';
+                } else if (newStatus === 'ditolak') {
+                    confirmMsg = 'Apakah Anda yakin ingin menolak laporan ini?';
+                }
+            } else if (role === 'petugas') {
+                if (newStatus === 'diproses') {
+                    confirmMsg = 'Apakah Anda yakin akan mulai menangani laporan ini?';
+                } else if (newStatus === 'selesai') {
+                    confirmMsg = 'Apakah Anda yakin laporan ini telah selesai ditangani?';
+                }
+            }
+
+            if (confirmMsg && !confirm(confirmMsg)) {
+                e.preventDefault();
+                return;
+            }
+
             const btn = this.querySelector('.btn-save');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan…';
             btn.disabled = true;

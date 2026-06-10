@@ -504,21 +504,40 @@
                     <span class="title" style="font-size:.92rem;"><i class="fas fa-exchange-alt me-2" style="font-size:.8rem;color:var(--muted);"></i>Ubah Status</span>
                 </div>
                 <div class="detail-card-body">
-                    <form method="POST" action="{{ route('admin.laporan.updateStatus', $report->id) }}" id="statusForm">
+                    <form method="POST" action="{{ route('admin.laporan.updateStatus', $report->id) }}" id="statusForm" data-role="{{ Auth::user()->role }}">
                         @csrf
                         @method('PATCH')
                         <div class="mb-3">
-                            <select name="status" class="sel-status w-100">
-                                <option value="pending"      {{ $report->status==='pending'      ? 'selected':'' }}>Menunggu</option>
-                                <option value="diverifikasi" {{ $report->status==='diverifikasi' ? 'selected':'' }}>Diverifikasi</option>
-                                <option value="diproses"     {{ $report->status==='diproses'     ? 'selected':'' }}>Diproses</option>
-                                <option value="selesai"      {{ $report->status==='selesai'      ? 'selected':'' }}>Selesai</option>
-                                <option value="ditolak"      {{ $report->status==='ditolak'      ? 'selected':'' }}>Ditolak</option>
+                            <select name="status" class="sel-status w-100" id="statusSelect">
+                                @if(Auth::user()->role === 'admin' && in_array($report->status, ['pending', 'menunggu']))
+                                    <option value="" disabled selected>Pilih Aksi</option>
+                                    <option value="diverifikasi">Diverifikasi Laporan</option>
+                                    <option value="ditolak">Tolak Laporan</option>
+                                @elseif(Auth::user()->role === 'petugas')
+                                    @if($report->status === 'diverifikasi')
+                                        <option value="" disabled selected>Pilih Aksi</option>
+                                        <option value="diproses">Mulai Proses Penanganan</option>
+                                    @elseif($report->status === 'diproses')
+                                        <option value="" disabled selected>Pilih Aksi</option>
+                                        <option value="selesai">Selesaikan Penanganan</option>
+                                    @else
+                                        <option value="" disabled selected>Tidak ada aksi tersedia</option>
+                                    @endif
+                                @else
+                                    <option value="" disabled selected>Tidak ada aksi tersedia</option>
+                                @endif
                             </select>
                         </div>
+                        @if((Auth::user()->role === 'admin' && in_array($report->status, ['pending', 'menunggu'])) ||
+                            (Auth::user()->role === 'petugas' && in_array($report->status, ['diverifikasi', 'diproses'])))
                         <button type="submit" class="btn-save-status w-100" id="btnSaveStatus">
                             <i class="fas fa-save me-1"></i>Simpan Status
                         </button>
+                        @else
+                        <button type="button" class="btn btn-secondary w-100" disabled style="border-radius:10px; font-size:.85rem; font-weight:600;">
+                            <i class="fas fa-lock me-1"></i>Aksi Terkunci
+                        </button>
+                        @endif
                     </form>
                 </div>
             </div>
@@ -599,19 +618,44 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Visual feedback saat simpan status diklik
-    document.getElementById('statusForm').addEventListener('submit', function() {
+    // Visual feedback & Konfirmasi saat simpan status diklik
+    document.getElementById('statusForm').addEventListener('submit', function(e) {
+        const role = "{{ Auth::user()->role }}";
+        const newStatus = document.getElementById('statusSelect').value;
+        let confirmMsg = '';
+
+        if (role === 'admin') {
+            if (newStatus === 'diverifikasi') {
+                confirmMsg = 'Apakah Anda yakin ingin memverifikasi laporan ini?';
+            } else if (newStatus === 'ditolak') {
+                confirmMsg = 'Apakah Anda yakin ingin menolak laporan ini?';
+            }
+        } else if (role === 'petugas') {
+            if (newStatus === 'diproses') {
+                confirmMsg = 'Apakah Anda yakin akan mulai menangani laporan ini?';
+            } else if (newStatus === 'selesai') {
+                confirmMsg = 'Apakah Anda yakin laporan ini telah selesai ditangani?';
+            }
+        }
+
+        if (confirmMsg && !confirm(confirmMsg)) {
+            e.preventDefault();
+            return;
+        }
+
         const btn = document.getElementById('btnSaveStatus');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan…';
         btn.disabled = true;
     });
 
     // Visual feedback saat hapus diklik
-    document.getElementById('deleteForm').addEventListener('submit', function() {
-        const btn = document.getElementById('btnConfirmDelete');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menghapus…';
-        btn.disabled = true;
-    });
+    if (document.getElementById('deleteForm')) {
+        document.getElementById('deleteForm').addEventListener('submit', function() {
+            const btn = document.getElementById('btnConfirmDelete');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menghapus…';
+            btn.disabled = true;
+        });
+    }
 </script>
 </body>
 </html>
