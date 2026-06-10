@@ -47,8 +47,11 @@ class LaporanController extends Controller
 
     public function show(Report $report)
     {
-        // Pastikan hanya pelapor yang bisa melihat detail laporannya sendiri
-        if (Auth::user()->role !== 'pelapor' || $report->user_id !== Auth::id()) {
+        $user = Auth::user();
+
+        // Pelapor hanya bisa melihat laporannya sendiri
+        // Admin dan Petugas bisa melihat semua laporan
+        if ($user->role === 'pelapor' && $report->user_id !== $user->id) {
             abort(403, 'Anda tidak memiliki akses ke laporan ini.');
         }
 

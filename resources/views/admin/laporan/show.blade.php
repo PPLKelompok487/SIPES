@@ -325,6 +325,14 @@
                         <i class="fas fa-tasks me-1"></i>Kelola Laporan
                     </a>
                 </li>
+                @if(Auth::user()->role === 'admin')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                       href="{{ route('admin.users.index') }}">
+                        <i class="fas fa-users-cog me-1"></i>Kelola Pengguna
+                    </a>
+                </li>
+                @endif
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
@@ -371,7 +379,11 @@
                 <h1><i class="fas fa-file-alt me-2"></i>Detail Laporan</h1>
                 <p>Detail lengkap laporan #{{ $report->id }}</p>
             </div>
+            @if(Auth::user()->role === 'admin')
             <span class="admin-pill"><i class="fas fa-shield-alt me-1"></i>Admin</span>
+            @else
+            <span class="admin-pill" style="background: rgba(82, 183, 136, 0.2);"><i class="fas fa-user-shield me-1"></i>Petugas</span>
+            @endif
         </div>
     </div>
 </div>
@@ -511,6 +523,7 @@
                 </div>
             </div>
 
+            @if(Auth::user()->role === 'admin')
             {{-- Danger Zone --}}
             <div class="detail-card" style="border: 1.5px solid #fecaca;">
                 <div class="detail-card-header" style="background: #fef2f2; border-bottom-color: #fecaca;">
@@ -525,6 +538,7 @@
                     </button>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 
