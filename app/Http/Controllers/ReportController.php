@@ -140,18 +140,55 @@ class ReportController extends Controller
      */
     public function updateStatus(Request $request, Report $report)
     {
-        if (Auth::guest() || (Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas')) {
+        $user = Auth::user();
+        if (Auth::guest() || ($user->role !== 'admin' && $user->role !== 'petugas')) {
             abort(403, 'Aksi ini hanya dapat dilakukan oleh admin atau petugas.');
         }
 
         $validated = $request->validate([
-            'status' => ['required', 'in:pending,menunggu,diverifikasi,diproses,selesai,ditolak'],
+            'status' => ['required', 'string'],
         ]);
 
-        $report->update(['status' => $validated['status']]);
+        $newStatus = $validated['status'];
+        $oldStatus = $report->status;
 
-        return redirect()->route('admin.laporan.index')
-            ->with('success', 'Status laporan berhasil diubah menjadi "' . ucfirst($validated['status']) . '".');
+        // Workflow Status: Menunggu -> Diverifikasi -> Diproses -> Selesai
+        // Atau: Menunggu -> Ditolak
+
+        // 1. Validasi Role Admin
+        if ($user->role === 'admin') {
+            // Admin hanya bisa memproses laporan yang berstatus Menunggu
+            if (!in_array($oldStatus, ['pending', 'menunggu'])) {
+                return back()->with('error', 'Admin hanya dapat memproses laporan yang berstatus Menunggu.');
+            }
+
+            // Admin hanya bisa mengubah ke Diverifikasi atau Ditolak
+            if (!in_array($newStatus, ['diverifikasi', 'ditolak'])) {
+                return back()->with('error', 'Admin hanya diizinkan mengubah status menjadi Diverifikasi atau Ditolak.');
+            }
+        } 
+        
+        // 2. Validasi Role Petugas
+        elseif ($user->role === 'petugas') {
+            if ($oldStatus === 'diverifikasi') {
+                // Petugas mengubah Diverifikasi -> Diproses
+                if ($newStatus !== 'diproses') {
+                    return back()->with('error', 'Petugas hanya dapat mengubah status Diverifikasi menjadi Diproses.');
+                }
+            } elseif ($oldStatus === 'diproses') {
+                // Petugas mengubah Diproses -> Selesai
+                if ($newStatus !== 'selesai') {
+                    return back()->with('error', 'Petugas hanya dapat mengubah status Diproses menjadi Selesai.');
+                }
+            } else {
+                return back()->with('error', 'Petugas tidak memiliki wewenang untuk mengubah status pada tahap ini.');
+            }
+        }
+
+        $report->update(['status' => $newStatus]);
+
+        return redirect()->back()
+            ->with('success', 'Status laporan berhasil diperbarui.');
     }
 
     /**
