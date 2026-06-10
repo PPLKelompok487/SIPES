@@ -11,7 +11,13 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminUserController;
 
 Route::get('/', function () {
-    return view('home');
+    $stats = [
+        'total' => \App\Models\Report::count(),
+        'diproses' => \App\Models\Report::where('status', 'diproses')->count(),
+        'selesai' => \App\Models\Report::where('status', 'selesai')->count(),
+        'users' => \App\Models\User::count(),
+    ];
+    return view('home', compact('stats'));
 });
 
 // Registration routes
