@@ -59,7 +59,12 @@
 
                     <div class="mb-4">
                         <label class="form-label">PASSWORD</label>
-                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        <div class="position-relative">
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Password" required style="padding-right: 45px;">
+                            <span class="position-absolute end-0 top-50 translate-middle-y me-3" id="togglePassword" style="cursor: pointer; z-index: 10;">
+                                <i class="fas fa-eye text-secondary" id="toggleIcon"></i>
+                            </span>
+                        </div>
                     </div>
 
                     <div class="mb-4 form-check">
@@ -82,5 +87,21 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        });
+    </script>
 </body>
 </html>
