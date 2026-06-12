@@ -19,6 +19,13 @@
             box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.4);
         }
         #map { height: 350px; border-radius: 0.75rem; z-index: 1; }
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-bounce-short {
+            animation: bounce-short 2.4s infinite ease-in-out;
+        }
     </style>
 </head>
 <body class="flex min-h-screen">
@@ -71,7 +78,7 @@
             <div class="bg-blue-50 p-4 rounded-xl">
                 <p class="text-xs text-blue-600 font-bold uppercase mb-1">Butuh Bantuan?</p>
                 <p class="text-xs text-blue-500 mb-3">Hubungi Admin jika ada kendala sistem.</p>
-                <a href="#" class="text-xs font-bold text-blue-700 hover:underline">Kontak Support</a>
+                <a href="javascript:void(0)" onclick="openSupportModal()" class="text-xs font-bold text-blue-700 hover:underline">Kontak Support</a>
             </div>
         </div>
     </aside>
@@ -360,5 +367,83 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Support Modal -->
+    <div id="supportModal" class="fixed inset-0 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <!-- Backdrop with blur -->
+        <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-md transition-all duration-300" onclick="closeSupportModal()"></div>
+        
+        <!-- Modal content with scale-in animation -->
+        <div class="relative bg-white rounded-2xl shadow-2xl border border-gray-100 max-w-md w-full mx-4 p-6 overflow-hidden transform scale-95 opacity-0 transition-all duration-300 ease-out z-10" id="supportModalContent">
+            <!-- Close Button -->
+            <button onclick="closeSupportModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition-all cursor-pointer">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="flex flex-col items-center text-center mt-2">
+                <!-- Icon/Visual element with gradient background -->
+                <div class="w-16 h-16 bg-gradient-to-tr from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white text-3xl shadow-lg shadow-green-200 mb-4 animate-bounce-short">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+
+                <!-- Title -->
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Hubungi Kontak Support</h3>
+                <p class="text-sm text-gray-500 mb-6 px-4">
+                    Ada kendala dengan sistem SIPES? Hubungi tim support kami melalui WhatsApp untuk respon cepat.
+                </p>
+
+                <!-- Number Info Card -->
+                <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 w-full mb-6 flex items-center justify-center gap-3">
+                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">No. WhatsApp:</span>
+                    <span class="text-sm font-bold text-gray-800">+62 856-9774-9964</span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <button onclick="closeSupportModal()" class="w-full sm:w-1/3 py-3 px-4 border border-gray-200 text-gray-600 hover:bg-gray-50 font-semibold rounded-xl text-sm transition-all cursor-pointer">
+                        Batal
+                    </button>
+                    <a href="https://wa.me/6285697749964" target="_blank" rel="noopener noreferrer" onclick="closeSupportModal()" class="w-full sm:w-2/3 py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-green-200 hover:shadow-green-300 transition-all cursor-pointer">
+                        <i class="fab fa-whatsapp text-lg"></i>
+                        Chat WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for Support Modal -->
+    <script>
+        function openSupportModal() {
+            const modal = document.getElementById('supportModal');
+            const content = document.getElementById('supportModalContent');
+            
+            modal.classList.remove('hidden');
+            
+            // Force a reflow
+            modal.offsetHeight;
+            
+            modal.classList.remove('opacity-0');
+            modal.classList.add('opacity-100');
+            
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }
+
+        function closeSupportModal() {
+            const modal = document.getElementById('supportModal');
+            const content = document.getElementById('supportModalContent');
+            
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
 </body>
 </html>
