@@ -20,7 +20,7 @@
                 <p class="brand-description">
                     Sistem Pelaporan Sampah Lingkungan yang Terintegrasi dan Modern.
                 </p>
-                
+
                 <ul class="feature-list">
                     <li><i class="fas fa-check-circle"></i> Lapor sampah lebih cepat</li>
                     <li><i class="fas fa-check-circle"></i> Pantau status pembersihan</li>
@@ -45,7 +45,7 @@
 
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
-                    
+
                     <div class="mb-3">
                         <label class="form-label">NAMA LENGKAP</label>
                         <input type="text" class="form-control" name="name" value="{{ old('name') }}" placeholder="Nama Lengkap" required>
@@ -67,12 +67,22 @@
 
                     <div class="mb-3">
                         <label class="form-label">PASSWORD</label>
-                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        <div class="position-relative">
+                            <input type="password" id="password" class="form-control pe-5" name="password" placeholder="Password" required>
+                            <button type="button" id="togglePassword" class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent" style="padding: 0.375rem 0.75rem;">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label">KONFIRMASI PASSWORD</label>
-                        <input type="password" class="form-control" name="password_confirmation" placeholder="Konfirmasi Password" required>
+                        <div class="position-relative">
+                            <input type="password" id="password_confirmation" class="form-control pe-5" name="password_confirmation" placeholder="Konfirmasi Password" required>
+                            <button type="button" id="togglePasswordConfirm" class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent" style="padding: 0.375rem 0.75rem;">
+                                <i class="fas fa-eye" id="eyeIconConfirm"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="d-grid">
@@ -90,5 +100,30 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle Password
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            eyeIcon.classList.toggle('fa-eye');
+            eyeIcon.classList.toggle('fa-eye-slash');
+        });
+
+        // Toggle Password Confirmation
+        const togglePasswordConfirm = document.getElementById('togglePasswordConfirm');
+        const passwordConfirmInput = document.getElementById('password_confirmation');
+        const eyeIconConfirm = document.getElementById('eyeIconConfirm');
+
+        togglePasswordConfirm.addEventListener('click', function () {
+            const type = passwordConfirmInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordConfirmInput.setAttribute('type', type);
+            eyeIconConfirm.classList.toggle('fa-eye');
+            eyeIconConfirm.classList.toggle('fa-eye-slash');
+        });
+    </script>
 </body>
 </html>
