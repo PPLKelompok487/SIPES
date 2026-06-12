@@ -106,7 +106,7 @@
                 <div class="bg-blue-50 p-4 rounded-xl">
                     <p class="text-xs text-blue-600 font-bold uppercase mb-1">Butuh Bantuan?</p>
                     <p class="text-xs text-blue-500 mb-3">Hubungi Admin jika ada kendala sistem.</p>
-                    <a href="#" class="text-xs font-bold text-blue-700 hover:underline">Kontak Support</a>
+                    <a href="javascript:void(0)" onclick="openSupportModal()" class="text-xs font-bold text-blue-700 hover:underline">Kontak Support</a>
                 </div>
             </div>
         </aside>
@@ -314,6 +314,66 @@
                 </div>
             </div>
         </main>
+    <!-- Support Modal -->
+    <div id="supportModal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300" onclick="closeSupportModal()"></div>
+        
+        <!-- Modal Card -->
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm transform scale-95 opacity-0 transition-all duration-300 overflow-hidden z-10 border border-gray-100 p-8 text-center flex flex-col items-center">
+            <!-- Close Button -->
+            <button onclick="closeSupportModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-50 transition-all focus:outline-none" aria-label="Tutup">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+            
+            <!-- WhatsApp Icon Container with premium gradient & shadow -->
+            <div class="w-20 h-20 bg-gradient-to-tr from-green-500 to-emerald-400 rounded-3xl flex items-center justify-center text-white text-4xl mb-6 shadow-lg shadow-green-200">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            
+            <!-- Text Content -->
+            <h3 class="text-2xl font-extrabold text-gray-900 mb-2">Kontak Support</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-8">
+                Butuh bantuan terkait sistem SIPES? Hubungi admin melalui WhatsApp untuk respon cepat dan penanganan langsung.
+            </p>
+            
+            <!-- Action Buttons -->
+            <div class="w-full space-y-3">
+                <a href="https://wa.me/6285697749964" target="_blank" class="w-full py-4 bg-green-500 hover:bg-green-600 text-white font-bold rounded-2xl shadow-lg shadow-green-100 hover:shadow-xl hover:shadow-green-200 transition-all flex items-center justify-center gap-2 cursor-pointer text-decoration-none">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                    Hubungi via WhatsApp
+                </a>
+                <button onclick="closeSupportModal()" class="w-full py-3.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold rounded-2xl transition-all cursor-pointer border border-gray-100">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Modal Logic -->
+    <script>
+        function openSupportModal() {
+            const modal = document.getElementById('supportModal');
+            const card = modal.querySelector('.relative');
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-100');
+            
+            card.classList.remove('scale-95', 'opacity-0');
+            card.classList.add('scale-100', 'opacity-100');
+        }
+
+        function closeSupportModal() {
+            const modal = document.getElementById('supportModal');
+            const card = modal.querySelector('.relative');
+            
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+        }
+    </script>
     </body>
     </html>
 @else
