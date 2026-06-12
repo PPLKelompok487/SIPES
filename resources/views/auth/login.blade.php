@@ -20,7 +20,7 @@
                 <p class="brand-description">
                     Sistem Pelaporan Sampah Lingkungan yang Terintegrasi dan Modern.
                 </p>
-                
+
                 <ul class="feature-list">
                     <li><i class="fas fa-check-circle"></i> Lapor sampah lebih cepat</li>
                     <li><i class="fas fa-check-circle"></i> Pantau status pembersihan</li>
@@ -51,7 +51,7 @@
 
                 <form method="POST" action="{{ route('login.post') }}">
                     @csrf
-                    
+
                     <div class="mb-3">
                         <label class="form-label">ALAMAT EMAIL</label>
                         <input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Alamat Email" required autofocus>
@@ -59,7 +59,12 @@
 
                     <div class="mb-4">
                         <label class="form-label">PASSWORD</label>
-                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        <div class="position-relative">
+                            <input type="password" id="password" class="form-control pe-5" name="password" placeholder="Password" required>
+                            <button type="button" id="togglePassword" class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent" style="padding: 0.375rem 0.75rem;">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-4 form-check">
@@ -82,5 +87,20 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', function () {
+            // Toggle type
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Toggle icon
+            eyeIcon.classList.toggle('fa-eye');
+            eyeIcon.classList.toggle('fa-eye-slash');
+        });
+    </script>
 </body>
 </html>
