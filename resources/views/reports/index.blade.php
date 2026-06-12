@@ -14,7 +14,7 @@
             --dark-green: #1b4332;
         }
         body { background-color: #f4f7f6; color: #333; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
+
         /* Navbar Styles */
         .navbar {
             background: var(--primary-green);
@@ -36,7 +36,7 @@
             transition: color 0.3s ease;
         }
         .nav-link:hover, .nav-link.active { color: white !important; }
-        
+
         .report-card { border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         .badge-status { font-size: 0.85rem; }
         .report-image { max-width: 120px; border-radius: 10px; object-fit: cover; }
@@ -103,6 +103,18 @@
         @else
             <div class="row gy-3">
                 @foreach($reports as $report)
+                    @php
+                        $statusMap = [
+                            'pending'      => ['bg' => 'warning', 'text' => 'text-dark', 'label' => 'Menunggu'],
+                            'menunggu'     => ['bg' => 'warning', 'text' => 'text-dark', 'label' => 'Menunggu'],
+                            'diverifikasi' => ['bg' => 'info',    'text' => 'text-white','label' => 'Diverifikasi'],
+                            'diproses'     => ['bg' => 'info',    'text' => 'text-white','label' => 'Diproses'],
+                            'processing'   => ['bg' => 'info',    'text' => 'text-white','label' => 'Diproses'],
+                            'selesai'      => ['bg' => 'success', 'text' => 'text-white','label' => 'Selesai'],
+                            'ditolak'      => ['bg' => 'danger',  'text' => 'text-white','label' => 'Ditolak'],
+                        ];
+                        $s = $statusMap[$report->status] ?? ['bg' => 'secondary', 'text' => 'text-white', 'label' => ucfirst($report->status)];
+                    @endphp
                     <div class="col-lg-12">
                         <div class="card report-card p-3">
                             <div class="row g-3 align-items-center">
@@ -115,8 +127,8 @@
                                     <p class="mb-0 text-secondary">Dilaporkan oleh <strong>{{ Auth::user()->name }}</strong> pada {{ $report->created_at->format('d M Y H:i') }}</p>
                                 </div>
                                 <div class="col-md-3 text-end">
-                                    <span class="badge bg-{{ $report->status === 'pending' ? 'warning' : ($report->status === 'processing' ? 'info' : 'success') }} badge-status">
-                                        {{ ucfirst($report->status) }}
+                                    <span class="badge bg-{{ $s['bg'] }} badge-status {{ $s['text'] }}">
+                                        {{ $s['label'] }}
                                     </span>
                                     <form method="POST" action="{{ route('reports.destroy', $report) }}" class="d-inline-block mt-2">
                                         @csrf

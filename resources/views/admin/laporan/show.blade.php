@@ -1,661 +1,587 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Laporan #{{ $report->id }} - Admin SIPES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary:    #2d6a4f;
-            --primary-dk: #1b4332;
-            --accent:     #52b788;
-            --soft:       #d8f3dc;
-            --bg:         #f0f4f1;
-            --card-bg:    #ffffff;
-            --text:       #1e2d23;
-            --muted:      #6b7c72;
-            --border:     #e4ece7;
-        }
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-
-        /* ── Navbar ───────────────────────────────── */
-        .navbar {
-            background: var(--primary);
-            box-shadow: 0 2px 12px rgba(0,0,0,.12);
-            padding: .85rem 0;
-        }
-        .navbar-brand {
-            color: #fff !important;
-            font-weight: 700;
-            font-size: 1.35rem;
-            letter-spacing: .3px;
-        }
-        .navbar-brand i { margin-right: 8px; color: var(--accent); }
-        .nav-link { color: rgba(255,255,255,.75) !important; font-weight: 500; padding: .4rem .9rem !important; border-radius: 6px; transition: all .2s; }
-        .nav-link:hover, .nav-link.active { color: #fff !important; background: rgba(255,255,255,.12); }
-        .dropdown-menu { border: none; border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.12); padding: .5rem; }
-        .dropdown-item { border-radius: 8px; padding: .5rem .9rem; font-size: .9rem; }
-        .dropdown-item:hover { background: var(--soft); color: var(--primary); }
-
-        /* ── Page Header ──────────────────────────── */
-        .page-header {
-            background: linear-gradient(135deg, var(--primary) 0%, #40916c 100%);
-            padding: 2rem 0 3.5rem;
-            margin-bottom: -1.8rem;
-        }
-        .page-header h1 { color: #fff; font-weight: 700; font-size: 1.6rem; margin-bottom: .25rem; }
-        .page-header p  { color: rgba(255,255,255,.75); margin: 0; font-size: .95rem; }
-        .admin-pill {
-            background: rgba(255,255,255,.18);
-            border: 1px solid rgba(255,255,255,.3);
-            color: #fff;
-            padding: .3rem .85rem;
-            border-radius: 50px;
-            font-size: .78rem;
-            font-weight: 600;
-            letter-spacing: .5px;
-            backdrop-filter: blur(4px);
-        }
-
-        /* ── Breadcrumb ───────────────────────────── */
-        .breadcrumb-custom {
-            background: transparent;
-            padding: 0;
-            margin-bottom: 1.5rem;
-        }
-        .breadcrumb-custom a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: .9rem;
-        }
-        .breadcrumb-custom a:hover { text-decoration: underline; }
-        .breadcrumb-custom .separator {
-            color: var(--muted);
-            margin: 0 .5rem;
-            font-size: .85rem;
-        }
-        .breadcrumb-custom .current {
-            color: var(--muted);
-            font-size: .9rem;
-            font-weight: 500;
-        }
-
-        /* ── Detail Card ─────────────────────────── */
-        .detail-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,.06);
-            overflow: hidden;
-        }
-        .detail-card-header {
-            padding: 1.2rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .detail-card-header .title {
-            font-weight: 700;
-            font-size: 1.05rem;
-            color: var(--primary-dk);
-        }
-        .detail-card-body {
-            padding: 1.5rem;
-        }
-
-        /* ── Photo ────────────────────────────────── */
-        .photo-container {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: transform .2s;
-        }
-        .photo-container:hover { transform: scale(1.01); }
-        .photo-container img {
-            width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-            display: block;
-        }
-        .photo-overlay {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,.5));
-            padding: .8rem 1rem;
-            color: #fff;
-            font-size: .82rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-        }
-        .photo-placeholder {
-            width: 100%;
-            height: 250px;
-            border-radius: 12px;
-            background: var(--soft);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 3rem;
-            border: 1px solid var(--border);
-        }
-
-        /* ── Info Sections ────────────────────────── */
-        .info-section { margin-bottom: 1.5rem; }
-        .info-label {
-            font-size: .78rem;
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: .6px;
-            margin-bottom: .4rem;
-        }
-        .info-value {
-            font-size: .95rem;
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        /* ── Pelapor Card ─────────────────────────── */
-        .pelapor-card {
-            background: var(--soft);
-            border-radius: 12px;
-            padding: 1rem 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: .8rem;
-        }
-        .pelapor-avatar {
-            width: 42px; height: 42px; border-radius: 50%;
-            background: var(--primary); color: #fff;
-            display: flex; align-items: center; justify-content: center;
-            font-size: .95rem; font-weight: 700; flex-shrink: 0;
-        }
-        .pelapor-info .name { font-weight: 600; font-size: .92rem; color: var(--primary-dk); }
-        .pelapor-info .email { font-size: .82rem; color: var(--muted); }
-
-        /* ── Status Badge ─────────────────────────── */
-        .sbadge {
-            font-size: .75rem; font-weight: 700;
-            padding: .3rem .8rem; border-radius: 50px;
-            letter-spacing: .3px; display: inline-block;
-        }
-        .sbadge-pending, .sbadge-menunggu { background: #fef3c7; color: #92400e; }
-        .sbadge-diproses     { background: #ffedd5; color: #9a3412; }
-        .sbadge-selesai      { background: #dcfce7; color: #14532d; }
-        .sbadge-ditolak      { background: #fee2e2; color: #7f1d1d; }
-        .sbadge-diverifikasi { background: #e0f2fe; color: #0c4a6e; }
-
-        /* ── Buttons ──────────────────────────────── */
-        .btn-back {
-            background: var(--card-bg);
-            border: 1.5px solid var(--border);
-            color: var(--text);
-            font-weight: 600;
-            font-size: .88rem;
-            padding: .5rem 1.2rem;
-            border-radius: 10px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: .5rem;
-            transition: all .2s;
-        }
-        .btn-back:hover { border-color: var(--accent); color: var(--primary); background: #fafcfb; }
-
-        .btn-save-status {
-            background: var(--primary); border: none; color: #fff;
-            font-size: .85rem; font-weight: 600; padding: .5rem 1.2rem;
-            border-radius: 10px; cursor: pointer; transition: background .2s, transform .1s;
-            font-family: 'Inter', sans-serif;
-        }
-        .btn-save-status:hover { background: var(--primary-dk); }
-        .btn-save-status:active { transform: scale(.96); }
-
-        .btn-delete {
-            background: #fee2e2; border: 1.5px solid #fecaca; color: #991b1b;
-            font-size: .85rem; font-weight: 600; padding: .5rem 1.2rem;
-            border-radius: 10px; cursor: pointer; transition: all .2s;
-            font-family: 'Inter', sans-serif;
-        }
-        .btn-delete:hover { background: #fca5a5; border-color: #f87171; color: #7f1d1d; }
-
-        .sel-status {
-            border: 1.5px solid var(--border); border-radius: 8px;
-            padding: .45rem .75rem; font-size: .85rem;
-            font-family: 'Inter', sans-serif; color: var(--text);
-            background: #fff; cursor: pointer; outline: none;
-            transition: border-color .2s; min-width: 150px;
-        }
-        .sel-status:focus { border-color: var(--accent); }
-
-        /* ── Alert ────────────────────────────────── */
-        .alert-success {
-            background: #f0fdf4; border: 1px solid #bbf7d0;
-            color: #14532d; border-radius: 10px;
-        }
-        .alert-danger {
-            background: #fef2f2; border: 1px solid #fecaca;
-            color: #7f1d1d; border-radius: 10px;
-        }
-
-        /* ── Modal Lightbox ──────────────────────── */
-        .modal-photo .modal-content {
-            background: transparent;
-            border: none;
-        }
-        .modal-photo .modal-body {
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-photo .modal-body img {
-            max-width: 100%;
-            max-height: 90vh;
-            border-radius: 12px;
-            box-shadow: 0 8px 40px rgba(0,0,0,.4);
-        }
-        .modal-photo .btn-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(255,255,255,.9);
-            border-radius: 50%;
-            padding: .6rem;
-            opacity: 1;
-            z-index: 10;
-        }
-
-        /* ── Delete Confirm Modal ────────────────── */
-        .delete-modal .modal-content {
-            border-radius: 16px;
-            border: none;
-            box-shadow: 0 12px 40px rgba(0,0,0,.15);
-        }
-        .delete-modal .modal-header {
-            border-bottom: 1px solid var(--border);
-            padding: 1.2rem 1.5rem;
-        }
-        .delete-modal .modal-body {
-            padding: 1.5rem;
-        }
-        .delete-modal .modal-footer {
-            border-top: 1px solid var(--border);
-            padding: 1rem 1.5rem;
-        }
-    </style>
-</head>
-<body>
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
-        <a class="navbar-brand" href="{{ route('dashboard') }}">
-            <i class="fas fa-leaf"></i>SIPES
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="nav">
-            <ul class="navbar-nav me-auto gap-1">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard') }}">
-                        <i class="fas fa-home me-1"></i>Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ route('admin.laporan.index') }}">
-                        <i class="fas fa-tasks me-1"></i>Kelola Laporan
-                    </a>
-                </li>
-                @if(Auth::user()->role === 'admin')
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
-                       href="{{ route('admin.users.index') }}">
-                        <i class="fas fa-users-cog me-1"></i>Kelola Pengguna
-                    </a>
-                </li>
-                @endif
-            </ul>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#"
-                       id="userMenu" role="button" data-bs-toggle="dropdown">
-                        @if(Auth::user()->profile_photo_path)
-                            <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
-                                 class="rounded-circle" style="width:30px;height:30px;object-fit:cover;" alt="">
-                        @else
-                            <div class="rounded-circle bg-white d-flex align-items-center justify-content-center"
-                                 style="width:30px;height:30px;font-weight:700;color:var(--primary);font-size:.85rem;">
-                                {{ strtoupper(substr(Auth::user()->name,0,1)) }}
-                            </div>
-                        @endif
-                        <span>{{ Auth::user()->name }}</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <a class="dropdown-item" href="{{ route('profile.show') }}">
-                                <i class="fas fa-user-circle me-2 text-muted"></i>Kelola Profil
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider my-1"></li>
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button class="dropdown-item text-danger">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<!-- Page Header -->
-<div class="page-header">
-    <div class="container">
-        <div class="d-flex align-items-center justify-content-between">
-            <div>
-                <h1><i class="fas fa-file-alt me-2"></i>Detail Laporan</h1>
-                <p>Detail lengkap laporan #{{ $report->id }}</p>
-            </div>
-            @if(Auth::user()->role === 'admin')
-            <span class="admin-pill"><i class="fas fa-shield-alt me-1"></i>Admin</span>
-            @else
-            <span class="admin-pill" style="background: rgba(82, 183, 136, 0.2);"><i class="fas fa-user-shield me-1"></i>Petugas</span>
-            @endif
-        </div>
-    </div>
-</div>
-
-<!-- Main Content -->
-<div class="container pb-5">
-
-    {{-- Alerts --}}
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show mb-4 mt-4" role="alert">
-        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-    @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show mb-4 mt-4" role="alert">
-        <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-
-    {{-- Breadcrumb --}}
-    <div class="breadcrumb-custom mt-4">
-        <a href="{{ route('admin.laporan.index') }}"><i class="fas fa-arrow-left me-1"></i>Kelola Laporan</a>
-        <span class="separator">/</span>
-        <span class="current">Detail Laporan #{{ $report->id }}</span>
-    </div>
-
-    @php
-        $sc = [
-            'pending'      => ['key'=>'pending',      'label'=>'Menunggu'],
-            'menunggu'     => ['key'=>'menunggu',     'label'=>'Menunggu'],
-            'diproses'     => ['key'=>'diproses',     'label'=>'Diproses'],
-            'selesai'      => ['key'=>'selesai',      'label'=>'Selesai'],
-            'ditolak'      => ['key'=>'ditolak',      'label'=>'Ditolak'],
-            'diverifikasi' => ['key'=>'diverifikasi', 'label'=>'Diverifikasi'],
-        ][$report->status] ?? ['key'=>'pending','label'=>'Menunggu'];
-    @endphp
-
-    <div class="row g-4">
-        {{-- Left Column: Photo & Description --}}
-        <div class="col-lg-8">
-            <div class="detail-card">
-                <div class="detail-card-header">
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="title"><i class="fas fa-hashtag me-1" style="font-size:.85rem;color:var(--muted);"></i>Laporan #{{ $report->id }}</span>
-                        <span class="sbadge sbadge-{{ $sc['key'] }}">{{ $sc['label'] }}</span>
-                    </div>
-                    <span style="font-size:.82rem;color:var(--muted);">
-                        <i class="fas fa-clock me-1"></i>{{ $report->created_at->format('d M Y, H:i') }} WIB
-                    </span>
+@if(Auth::user()->role === 'petugas')
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Detail Laporan - SIPES Petugas</title>
+        <!-- Tailwind CSS 4 -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+            body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; }
+            .sidebar-link.active {
+                background-color: #22C55E;
+                color: white;
+                box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.4);
+            }
+            :root {
+                --primary:      #2d6a4f;
+                --primary-dk: #1b4332;
+                --accent:      #52b788;
+                --soft:        #d8f3dc;
+                --bg:          #f0f4f1;
+                --card-bg:     #ffffff;
+                --text:        #1e2d23;
+                --muted:       #6b7c72;
+                --border:      #e4ece7;
+            }
+            .sbadge {
+                font-size: .75rem; font-weight: 700;
+                padding: .3rem .8rem; border-radius: 50px;
+                letter-spacing: .3px; display: inline-block;
+            }
+            .sbadge-pending, .sbadge-menunggu { background: #fef3c7; color: #92400e; }
+            .sbadge-diproses     { background: #ffedd5; color: #9a3412; }
+            .sbadge-selesai      { background: #dcfce7; color: #14532d; }
+            .sbadge-ditolak      { background: #fee2e2; color: #7f1d1d; }
+            .sbadge-diverifikasi { background: #e0f2fe; color: #0c4a6e; }
+            .btn-save {
+                background: var(--primary); border: none; color: white;
+                font-size: .85rem; font-weight: 600; padding: .5rem 1.2rem;
+                border-radius: 10px; cursor: pointer; transition: background .2s, transform .1s;
+                font-family: 'Inter', sans-serif;
+            }
+            .btn-save:hover { background: var(--primary-dk); }
+            .btn-save:active { transform: scale(.96); }
+            .btn-back {
+                background: #e5e7eb; color: #374151; border: none;
+                font-size: .85rem; font-weight: 600; padding: .5rem 1.2rem;
+                border-radius: 10px; cursor: pointer; transition: background .2s;
+                font-family: 'Inter', sans-serif;
+            }
+            .btn-back:hover { background: #d1d5db; }
+            .sel-status {
+                border: 1.5px solid var(--border); border-radius: 8px;
+                padding: .45rem .75rem; font-size: .85rem;
+                font-family: 'Inter', sans-serif; color: var(--text);
+                background: white; cursor: pointer; outline: none;
+                transition: border-color .2s; min-width: 150px;
+            }
+            .sel-status:focus { border-color: var(--accent); }
+        </style>
+    </head>
+    <body class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 flex-shrink-0 hidden md:flex flex-col">
+            <div class="p-6 flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-xl">
+                    <i class="fas fa-leaf"></i>
                 </div>
-                <div class="detail-card-body">
-                    {{-- Photo --}}
-                    <div class="mb-4">
-                        <div class="info-label"><i class="fas fa-camera me-1"></i>Foto Laporan</div>
+                <span class="text-xl font-bold text-gray-800">SIPES <span class="text-green-500">Petugas</span></span>
+            </div>
+            <nav class="flex-1 px-4 py-4 space-y-1">
+                <a href="{{ route('dashboard') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl transition-all">
+                    <i class="fas fa-th-large w-5"></i>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+                <a href="{{ route('admin.laporan.index', ['status' => 'pending']) }}" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl transition-all">
+                    <i class="fas fa-inbox w-5"></i>
+                    <span class="font-medium">Laporan Masuk</span>
+                </a>
+                <a href="{{ route('admin.laporan.index', ['status' => 'diproses']) }}" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl transition-all">
+                    <i class="fas fa-spinner w-5"></i>
+                    <span class="font-medium">Dalam Proses</span>
+                </a>
+                <a href="{{ route('admin.laporan.index', ['status' => 'selesai']) }}" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl transition-all">
+                    <i class="fas fa-check-circle w-5"></i>
+                    <span class="font-medium">Selesai</span>
+                </a>
+                <a href="{{ route('admin.laporan.index') }}" class="sidebar-link active flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl transition-all">
+                    <i class="fas fa-history w-5"></i>
+                    <span class="font-medium">Riwayat Penanganan</span>
+                </a>
+                <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Akun</div>
+                <a href="{{ route('profile.show') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl transition-all">
+                    <i class="fas fa-user w-5"></i>
+                    <span class="font-medium">Profil</span>
+                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full sidebar-link flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                        <i class="fas fa-sign-out-alt w-5"></i>
+                        <span class="font-medium">Logout</span>
+                    </button>
+                </form>
+            </nav>
+            <div class="p-4 border-t border-gray-100">
+                <div class="bg-blue-50 p-4 rounded-xl">
+                    <p class="text-xs text-blue-600 font-bold uppercase mb-1">Butuh Bantuan?</p>
+                    <p class="text-xs text-blue-500 mb-3">Hubungi Admin jika ada kendala sistem.</p>
+                    <a href="#" class="text-xs font-bold text-blue-700 hover:underline">Kontak Support</a>
+                </div>
+            </div>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <!-- Top Navbar -->
+            <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4 md:px-8 flex-shrink-0">
+                <button class="md:hidden text-gray-500 text-xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="flex-1 max-w-xl mx-4 hidden sm:block">
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm transition-all" placeholder="Cari laporan atau lokasi...">
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-all">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="h-8 w-px bg-gray-200 mx-1"></div>
+                    <div class="flex items-center gap-3 pl-2">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-sm font-bold text-gray-800 leading-none">{{ Auth::user()->name }}</p>
+                            <p class="text-xs text-gray-500 mt-1 uppercase font-semibold tracking-wider">Petugas Kebersihan</p>
+                        </div>
+                        <a href="{{ route('profile.show') }}" class="w-10 h-10 rounded-full overflow-hidden border-2 border-green-500 flex-shrink-0">
+                            @if(Auth::user()->profile_photo_path)
+                                <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" alt="Avatar" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-green-100 text-green-600 flex items-center justify-center font-bold">
+                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                </div>
+                            @endif
+                        </a>
+                    </div>
+                </div>
+            </header>
+            <!-- Page Body -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-8">
+                <div class="mb-8">
+                    <a href="{{ route('admin.laporan.index') }}" class="btn-back mb-3">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Daftar Laporan
+                    </a>
+                    <div class="mt-2">
+                        <h1 class="text-2xl font-bold text-gray-800">Detail Laporan #{{ $report->id }}</h1>
+                    </div>
+                </div>
+                @if(session('success'))
+                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
+                    <i class="fas fa-check-circle"></i> {{ session('success') }}
+                </div>
+                @endif
+                @if(session('error'))
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+                </div>
+                @endif
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Informasi Laporan</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Status</p>
+                                @php
+                                    $sc = [
+                                        'pending'      => ['key'=>'pending',      'label'=>'Menunggu'],
+                                        'menunggu'   => ['key'=>'menunggu', 'label'=>'Menunggu'],
+                                        'diverifikasi' => ['key'=>'diverifikasi', 'label'=>'Diverifikasi'],
+                                        'diproses'     => ['key'=>'diproses', 'label'=>'Diproses'],
+                                        'selesai'      => ['key'=>'selesai', 'label'=>'Selesai'],
+                                        'ditolak'      => ['key'=>'ditolak', 'label'=>'Ditolak'],
+                                    ][$report->status] ?? ['key'=>'pending','label'=>'Menunggu'];
+                                @endphp
+                                <span class="sbadge sbadge-{{ $sc['key'] }}">{{ $sc['label'] }}</span>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Deskripsi</p>
+                                <p class="text-gray-800">{{ $report->description }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Lokasi</p>
+                                <p class="text-gray-800"><i class="fas fa-map-marker-alt text-red-400 mr-2"></i>{{ $report->location }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Tanggal Dibuat</p>
+                                <p class="text-gray-800">{{ $report->created_at->format('d M Y H:i') }} WIB</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Dibuat Oleh</p>
+                                <p class="text-gray-800">
+                                    <i class="fas fa-user-circle mr-2 text-gray-400"></i>
+                                    {{ $report->user ? $report->user->name : 'Anonim' }}
+                                    @if($report->user)
+                                        <span class="text-xs text-gray-400">({{ $report->user->email }})</span>
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Bukti Foto</h3>
                         @if($report->photo_path)
-                            <div class="photo-container" data-bs-toggle="modal" data-bs-target="#photoModal" title="Klik untuk memperbesar">
-                                <img src="{{ asset('storage/'.$report->photo_path) }}" alt="Foto Laporan #{{ $report->id }}">
-                                <div class="photo-overlay">
-                                    <i class="fas fa-search-plus"></i>Klik untuk memperbesar
+                            <img src="{{ asset('storage/' . $report->photo_path) }}" alt="Foto Laporan" class="w-full rounded-xl shadow-sm border border-gray-100">
+                        @else
+                            <div class="bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-center h-64">
+                                <div class="text-center">
+                                    <i class="fas fa-image text-4xl text-gray-300 mb-3"></i>
+                                    <p class="text-sm text-gray-400">Tidak ada foto</p>
                                 </div>
                             </div>
-                        @else
-                            <div class="photo-placeholder">
-                                <i class="fas fa-image"></i>
-                            </div>
                         @endif
                     </div>
-
-                    {{-- Description --}}
-                    <div class="info-section">
-                        <div class="info-label"><i class="fas fa-align-left me-1"></i>Deskripsi</div>
-                        <div class="info-value">{{ $report->description }}</div>
-                    </div>
-
-                    {{-- Location --}}
-                    <div class="info-section">
-                        <div class="info-label"><i class="fas fa-map-marker-alt me-1"></i>Lokasi</div>
-                        <div class="info-value">{{ $report->location }}</div>
-                    </div>
-
-                    @if($report->latitude && $report->longitude)
-                    <div class="info-section">
-                        <div class="info-label"><i class="fas fa-globe me-1"></i>Koordinat</div>
-                        <div class="info-value">
-                            <code>{{ $report->latitude }}, {{ $report->longitude }}</code>
-                        </div>
-                    </div>
-                    @endif
                 </div>
-            </div>
-        </div>
-
-        {{-- Right Column: Info & Actions --}}
-        <div class="col-lg-4">
-            {{-- Pelapor Info --}}
-            <div class="detail-card mb-4">
-                <div class="detail-card-header">
-                    <span class="title" style="font-size:.92rem;"><i class="fas fa-user me-2" style="font-size:.8rem;color:var(--muted);"></i>Info Pelapor</span>
-                </div>
-                <div class="detail-card-body">
-                    <div class="pelapor-card">
-                        <div class="pelapor-avatar">
-                            {{ strtoupper(substr($report->user->name ?? '?', 0, 1)) }}
-                        </div>
-                        <div class="pelapor-info">
-                            <div class="name">{{ $report->user->name ?? 'Tidak diketahui' }}</div>
-                            <div class="email">{{ $report->user->email ?? '-' }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Update Status --}}
-            <div class="detail-card mb-4">
-                <div class="detail-card-header">
-                    <span class="title" style="font-size:.92rem;"><i class="fas fa-exchange-alt me-2" style="font-size:.8rem;color:var(--muted);"></i>Ubah Status</span>
-                </div>
-                <div class="detail-card-body">
-                    <form method="POST" action="{{ route('admin.laporan.updateStatus', $report->id) }}" id="statusForm" data-role="{{ Auth::user()->role }}">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mt-8">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Perbarui Status</h3>
+                    <form method="POST" action="{{ route('admin.laporan.updateStatus', $report->id) }}" id="form-update-status">
                         @csrf
                         @method('PATCH')
-                        <div class="mb-3">
-                            <select name="status" class="sel-status w-100" id="statusSelect">
-                                @if(Auth::user()->role === 'admin' && in_array($report->status, ['pending', 'menunggu']))
-                                    <option value="" disabled selected>Pilih Aksi</option>
-                                    <option value="diverifikasi">Diverifikasi Laporan</option>
-                                    <option value="ditolak">Tolak Laporan</option>
-                                @elseif(Auth::user()->role === 'petugas')
-                                    @if($report->status === 'diverifikasi')
-                                        <option value="" disabled selected>Pilih Aksi</option>
-                                        <option value="diproses">Mulai Proses Penanganan</option>
-                                    @elseif($report->status === 'diproses')
-                                        <option value="" disabled selected>Pilih Aksi</option>
-                                        <option value="selesai">Selesaikan Penanganan</option>
-                                    @else
-                                        <option value="" disabled selected>Tidak ada aksi tersedia</option>
-                                    @endif
+                        <div class="flex flex-wrap items-end gap-4">
+                            <div class="flex-1 min-w-[200px]">
+                                <label for="status" class="block text-sm text-gray-500 mb-1">Status Baru</label>
+                                @php
+                                    $currentStatus = $report->status;
+                                    $allowedOptions = [];
+                                    if(Auth::user()->role === 'admin') {
+                                        if(in_array($currentStatus, ['pending','menunggu'])) {
+                                            $allowedOptions = ['diverifikasi','ditolak'];
+                                        }
+                                    } elseif(Auth::user()->role === 'petugas') {
+                                        if($currentStatus === 'diverifikasi') {
+                                            $allowedOptions = ['diproses'];
+                                        } elseif($currentStatus === 'diproses') {
+                                            $allowedOptions = ['selesai'];
+                                        }
+                                    }
+                                    $optionLabels = [
+                                        'diverifikasi' => 'Diverifikasi',
+                                        'ditolak' => 'Ditolak',
+                                        'diproses' => 'Diproses',
+                                        'selesai' => 'Selesai'
+                                    ];
+                                @endphp
+                                @if(!empty($allowedOptions))
+                                    <select name="status" id="status" class="sel-status w-full">
+                                        <option value="">Pilih Status...</option>
+                                        @foreach($allowedOptions as $opt)
+                                            <option value="{{ $opt }}">{{ $optionLabels[$opt] }}</option>
+                                        @endforeach
+                                    </select>
                                 @else
-                                    <option value="" disabled selected>Tidak ada aksi tersedia</option>
+                                    <p class="text-gray-500 italic">Tidak ada aksi yang tersedia</p>
                                 @endif
-                            </select>
+                            </div>
+                            @if(!empty($allowedOptions))
+                                <button type="submit" class="btn-save">
+                                    <i class="fas fa-save mr-1"></i> Simpan
+                                </button>
+                            @endif
                         </div>
-                        @if((Auth::user()->role === 'admin' && in_array($report->status, ['pending', 'menunggu'])) || 
-                            (Auth::user()->role === 'petugas' && in_array($report->status, ['diverifikasi', 'diproses'])))
-                        <button type="submit" class="btn-save-status w-100" id="btnSaveStatus">
-                            <i class="fas fa-save me-1"></i>Simpan Status
-                        </button>
-                        @else
-                        <button type="button" class="btn btn-secondary w-100" disabled style="border-radius:10px; font-size:.85rem; font-weight:600;">
-                            <i class="fas fa-lock me-1"></i>Aksi Terkunci
-                        </button>
-                        @endif
                     </form>
                 </div>
             </div>
-
-            @if(Auth::user()->role === 'admin')
-            {{-- Danger Zone --}}
-            <div class="detail-card" style="border: 1.5px solid #fecaca;">
-                <div class="detail-card-header" style="background: #fef2f2; border-bottom-color: #fecaca;">
-                    <span class="title" style="font-size:.92rem; color: #991b1b;"><i class="fas fa-exclamation-triangle me-2" style="font-size:.8rem;"></i>Zona Bahaya</span>
+        </main>
+        <script>
+            document.getElementById('form-update-status').addEventListener('submit', function(e) {
+                var select = document.getElementById('status');
+                var newStatus = select.value;
+                var message = '';
+                if (newStatus === 'diverifikasi') message = 'Apakah Anda yakin ingin memverifikasi laporan ini?';
+                else if (newStatus === 'ditolak') message = 'Apakah Anda yakin ingin menolak laporan ini?';
+                else if (newStatus === 'diproses') message = 'Apakah Anda yakin akan mulai menangani laporan ini?';
+                else if (newStatus === 'selesai') message = 'Apakah Anda yakin laporan ini telah selesai ditangani?';
+                if (message && !confirm(message)) {
+                    e.preventDefault();
+                }
+            });
+        </script>
+    </body>
+    </html>
+@else
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Detail Laporan - Admin SIPES</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            :root {
+                --primary:      #2d6a4f;
+                --primary-dk: #1b4332;
+                --accent:      #52b788;
+                --soft:        #d8f3dc;
+                --bg:          #f0f4f1;
+                --card-bg:     #ffffff;
+                --text:        #1e2d23;
+                --muted:       #6b7c72;
+                --border:      #e4ece7;
+            }
+            * { box-sizing: border-box; }
+            body {
+                font-family: 'Inter', sans-serif;
+                background: var(--bg);
+                color: var(--text);
+            }
+            .navbar {
+                background: var(--primary);
+                box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+                padding: 1rem 0;
+            }
+            .navbar-brand {
+                color: white !important;
+                font-weight: 700;
+                font-size: 1.5rem;
+                display: flex;
+                align-items: center;
+            }
+            .navbar-brand i { margin-right: 8px; }
+            .nav-link {
+                color: rgba(255,255,255,0.8) !important;
+                font-weight: 500;
+                margin: 0 10px;
+                transition: color 0.3s ease;
+            }
+            .nav-link:hover, .nav-link.active { color: white !important; }
+            .dropdown-menu { border: none; border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,0.12); padding: .5rem; }
+            .dropdown-item { border-radius: 8px; padding: .5rem .9rem; font-size: .9rem; }
+            .dropdown-item:hover { background: var(--soft); color: var(--primary); }
+            .sbadge {
+                font-size: .75rem; font-weight: 700;
+                padding: .3rem .8rem; border-radius: 50px;
+                letter-spacing: .3px; display: inline-block;
+            }
+            .sbadge-pending, .sbadge-menunggu { background: #fef3c7; color: #92400e; }
+            .sbadge-diproses     { background: #ffedd5; color: #9a3412; }
+            .sbadge-selesai      { background: #dcfce7; color: #14532d; }
+            .sbadge-ditolak      { background: #fee2e2; color: #7f1d1d; }
+            .sbadge-diverifikasi { background: #e0f2fe; color: #0c4a6e; }
+            .btn-save {
+                background: var(--primary); border: none; color: white;
+                font-size: .85rem; font-weight: 600; padding: .5rem 1.2rem;
+                border-radius: 10px; cursor: pointer; transition: background .2s, transform .1s;
+                font-family: 'Inter', sans-serif;
+            }
+            .btn-save:hover { background: var(--primary-dk); }
+            .btn-save:active { transform: scale(.96); }
+            .btn-back {
+                background: #eee; color: #555; border: none;
+                font-size: .85rem; font-weight: 600; padding: .5rem 1.2rem;
+                border-radius: 10px; cursor: pointer; transition: background .2s;
+                font-family: 'Inter', sans-serif;
+            }
+            .btn-back:hover { background: #ddd; }
+            .sel-status {
+                border: 1.5px solid var(--border); border-radius: 8px;
+                padding: .45rem .75rem; font-size: .85rem;
+                font-family: 'Inter', sans-serif; color: var(--text);
+                background: white; cursor: pointer; outline: none;
+                transition: border-color .2s; min-width: 150px;
+            }
+            .sel-status:focus { border-color: var(--accent); }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{{ route('dashboard') }}">
+                    <i class="fas fa-leaf"></i>SIPES
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav">
+                    <ul class="navbar-nav me-auto gap-1">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard') }}">
+                                <i class="fas fa-home me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ route('admin.laporan.index') }}">
+                                <i class="fas fa-tasks me-1"></i>Kelola Laporan
+                            </a>
+                        </li>
+                        @if(Auth::user()->role === 'admin')
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                                <i class="fas fa-users-cog me-1"></i>Kelola Pengguna
+                            </a>
+                        </li>
+                        @endif
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userMenu" role="button" data-bs-toggle="dropdown">
+                                @if(Auth::user()->profile_photo_path)
+                                    <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" class="rounded-circle" style="width:30px;height:30px;object-fit:cover;" alt="">
+                                @else
+                                    <div class="rounded-circle bg-white d-flex align-items-center justify-content-center" style="width:30px;height:30px;font-weight:700;color:var(--primary);font-size:.85rem;">
+                                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                    </div>
+                                @endif
+                                <span>{{ Auth::user()->name }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('profile.show') }}">
+                                        <i class="fas fa-user-circle me-2 text-muted"></i>Kelola Profil
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button class="dropdown-item text-danger">
+                                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
-                <div class="detail-card-body">
-                    <p style="font-size:.85rem; color: var(--muted); margin-bottom: 1rem;">
-                        Menghapus laporan bersifat permanen dan tidak dapat dibatalkan.
-                    </p>
-                    <button type="button" class="btn-delete w-100" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <i class="fas fa-trash-alt me-1"></i>Hapus Laporan Ini
-                    </button>
+            </div>
+        </nav>
+        <div class="container py-5">
+            <div class="breadcrumb-custom mt-4 mb-4">
+                <a href="{{ route('admin.laporan.index') }}" class="btn-back mb-3">
+                    <i class="fas fa-arrow-left"></i>Kembali ke Daftar Laporan
+                </a>
+                <div class="mt-2">
+                    <span class="current">Detail Laporan #{{ $report->id }}</span>
                 </div>
+            </div>
+            @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             @endif
-        </div>
-    </div>
-
-    {{-- Back Button --}}
-    <div class="mt-4">
-        <a href="{{ route('admin.laporan.index') }}" class="btn-back">
-            <i class="fas fa-arrow-left"></i>Kembali ke Daftar Laporan
-        </a>
-    </div>
-
-</div>
-
-{{-- Photo Lightbox Modal --}}
-@if($report->photo_path)
-<div class="modal fade modal-photo" id="photoModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            <div class="modal-body">
-                <img src="{{ asset('storage/'.$report->photo_path) }}" alt="Foto Laporan #{{ $report->id }}">
+            @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            @endif
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-lg-4 col-md-5">
+                            @if($report->photo_path)
+                                <img src="{{ asset('storage/' . $report->photo_path) }}" class="img-fluid rounded-3 shadow-sm" alt="Foto Laporan">
+                            @else
+                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 250px;">
+                                    <div class="text-center">
+                                        <i class="fas fa-image fa-3x text-muted mb-2"></i>
+                                        <p class="text-muted">Tidak ada foto</p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="col-lg-8 col-md-7">
+                            <div class="mb-3">
+                                <span class="text-muted small">Status</span>
+                                <div class="mt-1">
+                                    @php
+                                        $sc = [
+                                            'pending'      => ['key'=>'pending',      'label'=>'Menunggu'],
+                                            'menunggu'   => ['key'=>'menunggu', 'label'=>'Menunggu'],
+                                            'diverifikasi' => ['key'=>'diverifikasi', 'label'=>'Diverifikasi'],
+                                            'diproses'     => ['key'=>'diproses', 'label'=>'Diproses'],
+                                            'selesai'      => ['key'=>'selesai', 'label'=>'Selesai'],
+                                            'ditolak'      => ['key'=>'ditolak', 'label'=>'Ditolak'],
+                                        ][$report->status] ?? ['key'=>'pending','label'=>'Menunggu'];
+                                    @endphp
+                                    <span class="sbadge sbadge-{{ $sc['key'] }}">{{ $sc['label'] }}</span>
+                                </div>
+                            </div>
+                            <h5 class="fw-bold mb-3">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i>{{ $report->location }}
+                            </h5>
+                            <p class="text-muted">{{ $report->description }}</p>
+                            <div class="mt-4 pt-3 border-top">
+                                <p class="mb-1">
+                                    <i class="fas fa-user-circle text-muted me-2"></i>
+                                    <strong>Dibuat oleh:</strong>
+                                    {{ $report->user ? $report->user->name : 'Anonim' }}
+                                    @if($report->user)
+                                        <span class="text-muted">({{ $report->user->email }})</span>
+                                    @endif
+                                </p>
+                                <p class="mb-0">
+                                    <i class="fas fa-clock text-muted me-2"></i>
+                                    <strong>Tanggal:</strong> {{ $report->created_at->format('d M Y H:i') }} WIB
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-3">Perbarui Status</h6>
+                    <form method="POST" action="{{ route('admin.laporan.updateStatus', $report->id) }}" id="form-update-status">
+                        @csrf
+                        @method('PATCH')
+                        <div class="d-flex flex-wrap align-items-end gap-3">
+                            <div class="flex-grow-1" style="max-width: 300px;">
+                                <label for="status" class="form-label small mb-1 text-muted">Status Baru</label>
+                                @php
+                                    $currentStatus = $report->status;
+                                    $allowedOptions = [];
+                                    if(Auth::user()->role === 'admin') {
+                                        if(in_array($currentStatus, ['pending','menunggu'])) {
+                                            $allowedOptions = ['diverifikasi','ditolak'];
+                                        }
+                                    } elseif(Auth::user()->role === 'petugas') {
+                                        if($currentStatus === 'diverifikasi') {
+                                            $allowedOptions = ['diproses'];
+                                        } elseif($currentStatus === 'diproses') {
+                                            $allowedOptions = ['selesai'];
+                                        }
+                                    }
+                                    $optionLabels = [
+                                        'diverifikasi' => 'Diverifikasi',
+                                        'ditolak' => 'Ditolak',
+                                        'diproses' => 'Diproses',
+                                        'selesai' => 'Selesai'
+                                    ];
+                                @endphp
+                                @if(!empty($allowedOptions))
+                                    <select name="status" id="status" class="sel-status w-100">
+                                        <option value="">Pilih Status...</option>
+                                        @foreach($allowedOptions as $opt)
+                                            <option value="{{ $opt }}">{{ $optionLabels[$opt] }}</option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    <p class="text-muted fst-italic">Tidak ada aksi yang tersedia</p>
+                                @endif
+                            </div>
+                            @if(!empty($allowedOptions))
+                                <button type="submit" class="btn-save">
+                                    <i class="fas fa-save me-1"></i> Simpan
+                                </button>
+                            @endif
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.getElementById('form-update-status').addEventListener('submit', function(e) {
+                var select = document.getElementById('status');
+                var newStatus = select.value;
+                var message = '';
+                if (newStatus === 'diverifikasi') message = 'Apakah Anda yakin ingin memverifikasi laporan ini?';
+                else if (newStatus === 'ditolak') message = 'Apakah Anda yakin ingin menolak laporan ini?';
+                else if (newStatus === 'diproses') message = 'Apakah Anda yakin akan mulai menangani laporan ini?';
+                else if (newStatus === 'selesai') message = 'Apakah Anda yakin laporan ini telah selesai ditangani?';
+                if (message && !confirm(message)) {
+                    e.preventDefault();
+                }
+            });
+        </script>
+    </body>
+    </html>
 @endif
-
-{{-- Delete Confirmation Modal --}}
-<div class="modal fade delete-modal" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" style="font-weight:700; font-size:1.05rem; color: #991b1b;">
-                    <i class="fas fa-exclamation-triangle me-2"></i>Konfirmasi Hapus
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p style="margin-bottom:.5rem;">Apakah Anda yakin ingin menghapus <strong>Laporan #{{ $report->id }}</strong>?</p>
-                <p style="font-size:.88rem; color: var(--muted); margin-bottom:0;">
-                    Tindakan ini bersifat permanen. Laporan beserta foto-nya akan dihapus dari sistem dan tidak dapat dikembalikan.
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" style="border-radius:8px; font-size:.88rem;">
-                    Batal
-                </button>
-                <form method="POST" action="{{ route('admin.laporan.destroy', $report->id) }}" id="deleteForm">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-danger" style="border-radius:8px; font-size:.88rem; font-weight:600;" id="btnConfirmDelete">
-                        <i class="fas fa-trash-alt me-1"></i>Ya, Hapus Laporan
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Visual feedback & Konfirmasi saat simpan status diklik
-    document.getElementById('statusForm').addEventListener('submit', function(e) {
-        const role = "{{ Auth::user()->role }}";
-        const newStatus = document.getElementById('statusSelect').value;
-        let confirmMsg = '';
-
-        if (role === 'admin') {
-            if (newStatus === 'diverifikasi') {
-                confirmMsg = 'Apakah Anda yakin ingin memverifikasi laporan ini?';
-            } else if (newStatus === 'ditolak') {
-                confirmMsg = 'Apakah Anda yakin ingin menolak laporan ini?';
-            }
-        } else if (role === 'petugas') {
-            if (newStatus === 'diproses') {
-                confirmMsg = 'Apakah Anda yakin akan mulai menangani laporan ini?';
-            } else if (newStatus === 'selesai') {
-                confirmMsg = 'Apakah Anda yakin laporan ini telah selesai ditangani?';
-            }
-        }
-
-        if (confirmMsg && !confirm(confirmMsg)) {
-            e.preventDefault();
-            return;
-        }
-
-        const btn = document.getElementById('btnSaveStatus');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan…';
-        btn.disabled = true;
-    });
-
-    // Visual feedback saat hapus diklik
-    if (document.getElementById('deleteForm')) {
-        document.getElementById('deleteForm').addEventListener('submit', function() {
-            const btn = document.getElementById('btnConfirmDelete');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menghapus…';
-            btn.disabled = true;
-        });
-    }
-</script>
-</body>
-</html>
